@@ -7,6 +7,14 @@ module.exports = {
     "plugin:react-hooks/recommended",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: "module",
+    project: ["./tsconfig.json", "./tsconfig.node.json"],
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
   parser: "@typescript-eslint/parser",
   plugins: ["react-refresh", "@typescript-eslint", "react-compiler"],
   rules: {
