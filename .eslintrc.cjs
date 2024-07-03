@@ -29,12 +29,4 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
   },
-  settings: {
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        paths: ['src'],
-      },
-    },
-  },
 };
