@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "format:fix": "npx prettier . --write",
-    "prepare": "husky install"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -39,13 +39,10 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npx lint-staged"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{ts,tsx}": "npm run lint"
   }
 }
