@@ -15,7 +15,11 @@
   font-size: 2rem;
 }
 
+.loading,
+.description {
+  font-size: 1.6rem;
+}
+
 .description {
   margin-top: 10px;
-  font-size: 1.6rem;
 }

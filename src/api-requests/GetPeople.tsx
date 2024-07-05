@@ -26,6 +26,5 @@ export const getPeople = async () => {
   });
   const people: People = await response.json();
   const person = people.results;
-  console.log(person);
   return person;
 };

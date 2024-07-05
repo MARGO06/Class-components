@@ -1,16 +1,18 @@
 import { Component } from 'react';
 import './SearchPart.css';
-import { getPeople } from '../../api-requests/GetPeople';
 
 interface SearchState {
   inputValue: string;
 }
+type SearchProps = {
+  onSearch: (searchValue: string) => void;
+};
 
-export class SearchPart extends Component<Record<string, never>, SearchState> {
-  constructor(props: Record<string, never>) {
+export class SearchPart extends Component<SearchProps, SearchState> {
+  constructor(props: SearchProps) {
     super(props);
     this.state = {
-      inputValue: '',
+      inputValue: localStorage.getItem('search') ?? '',
     };
   }
 
@@ -23,8 +25,9 @@ export class SearchPart extends Component<Record<string, never>, SearchState> {
 
   handleNameSave = () => {
     const { inputValue } = this.state;
+    const { onSearch } = this.props;
     localStorage.setItem('search', inputValue);
-    getPeople();
+    onSearch(inputValue);
   };
 
   render() {
