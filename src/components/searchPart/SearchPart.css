@@ -1,0 +1,10 @@
+.searchPart {
+  display: flex;
+  gap: 10px;
+  width: 30%;
+  margin: 10px auto;
+}
+
+.button-search {
+  background-color: rgb(163, 100, 223);
+}
