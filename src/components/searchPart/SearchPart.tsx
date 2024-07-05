@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import './SearchPart.css';
+import { getPeople } from '../../api-requests/GetPeople';
 
 interface SearchState {
   inputValue: string;
@@ -23,6 +24,7 @@ export class SearchPart extends Component<Record<string, never>, SearchState> {
   handleNameSave = () => {
     const { inputValue } = this.state;
     localStorage.setItem('search', inputValue);
+    getPeople();
   };
 
   render() {

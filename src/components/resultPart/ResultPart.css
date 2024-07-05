@@ -1,0 +1,21 @@
+.people {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin-top: 50px;
+  gap: 50px;
+}
+
+.person {
+  width: 46%;
+}
+
+.name {
+  font-size: 2rem;
+}
+
+.description {
+  margin-top: 10px;
+  font-size: 1.6rem;
+}
