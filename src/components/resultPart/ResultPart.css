@@ -2,8 +2,11 @@
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   flex-direction: row;
-  margin-top: 50px;
+  margin-top: 100px;
+  margin-bottom: 50px;
   gap: 50px;
 }
 
@@ -12,14 +15,49 @@
 }
 
 .name {
-  font-size: 2rem;
+  color: #d83b3b;
 }
 
-.loading,
 .description {
   font-size: 1.6rem;
+  margin-top: 10px;
+  line-height: 2.5rem;
+  color: aliceblue;
 }
 
-.description {
-  margin-top: 10px;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #d83b3b;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 501px) {
+  .person {
+    width: 60%;
+  }
+}
+
+@media (max-width: 501px) {
+  .person {
+    width: 80%;
+  }
 }

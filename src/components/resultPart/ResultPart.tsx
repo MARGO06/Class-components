@@ -34,8 +34,14 @@ export class ResultPart extends Component<ResultProps, ResultPartState> {
   fetchPeople = () => {
     getPeople().then((people) => {
       const { searchName } = this.props;
+      const searchLower = searchName.toLowerCase();
       this.setState({
-        people: searchName ? people.filter((person) => person.name === searchName) : people,
+        people: searchName
+          ? people.filter(
+              (person) =>
+                person.name.toLowerCase().indexOf(searchLower) !== -1 || person.name === searchName,
+            )
+          : people,
         isLoading: false,
       });
     });
@@ -44,13 +50,17 @@ export class ResultPart extends Component<ResultProps, ResultPartState> {
   render() {
     const { people, isLoading } = this.state;
     if (isLoading) {
-      return <div className="loading">Loading...</div>;
+      return (
+        <div className="container">
+          <div className="loading" />
+        </div>
+      );
     }
     return (
-      <div className="people">
+      <section className="people">
         {people.map((person) => (
           <div className="person" key={person.url}>
-            <p className="name">{person.name}</p>
+            <h2 className="name">{person.name}</h2>
             <p className="description">
               This person was born in the year {person.birth_year}.{' '}
               {person.gender.charAt(0).toUpperCase() + person.gender.slice(1)} has{' '}
@@ -60,7 +70,7 @@ export class ResultPart extends Component<ResultProps, ResultPartState> {
             </p>
           </div>
         ))}
-      </div>
+      </section>
     );
   }
 }

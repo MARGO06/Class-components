@@ -42,15 +42,20 @@ export class SearchPart extends Component<SearchProps, SearchState> {
       throw new Error('Mistake');
     }
     return (
-      <div className="searchPart">
-        <input id="main-input" value={inputValue} onChange={this.handleNameChange} />
+      <section className="searchPart">
+        <input
+          id="main-input"
+          placeholder="name"
+          value={inputValue}
+          onChange={this.handleNameChange}
+        />
         <button type="button" className="button-search" onClick={this.handleNameSave}>
           Search
         </button>
         <button type="button" className="button-error" onClick={this.handleError}>
           Error
         </button>
-      </div>
+      </section>
     );
   }
 }

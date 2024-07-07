@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import './ErrorBoundary.css';
 
 type ErrorBoundaryState = {
   hasError: boolean;
@@ -28,9 +29,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     const { children } = this.props;
     if (hasError) {
       return (
-        <div>
-          <h1>Something wrong</h1>
-          <p>Let`s try to reaload page</p>
+        <div className="error">
+          <h1 className="error-text">Something wrong</h1>
+          <p className="error-text">Let`s try to reaload page</p>
           <button
             type="button"
             className="button-reload"
