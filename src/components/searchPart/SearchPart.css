@@ -1,4 +1,5 @@
 .searchPart {
+  position: relative;
   display: flex;
   gap: 10px;
   width: 30%;
@@ -8,7 +9,6 @@
 #main-input {
   font-size: 1.6rem;
   height: 35px;
-  width: 60%;
   padding: 5px;
   border: 3px solid #d83b3b;
   color: aliceblue;
@@ -38,6 +38,19 @@
   font-size: 1.6rem;
   padding: 5px;
   font-weight: 700;
+}
+
+.button-search:hover,
+.button-error:hover {
+  cursor: pointer;
+}
+
+.error-input {
+  position: absolute;
+  color: #d83b3b;
+  margin-top: 45px;
+  font-size: 1.2rem;
+  width: 50%;
 }
 
 @media (max-width: 1001px) {

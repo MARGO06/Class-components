@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "src/*": ["./src/*"]
     },
@@ -27,6 +28,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src"],
   "exclude": ["dist", "node_modules"]
 }

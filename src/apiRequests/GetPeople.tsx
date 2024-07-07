@@ -13,7 +13,7 @@ export type Person = {
   url: string;
 };
 
-type People = {
+export type People = {
   count: number;
   next: string;
   previous: string;

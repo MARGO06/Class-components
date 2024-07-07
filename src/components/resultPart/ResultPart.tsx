@@ -1,54 +1,61 @@
 import { Component } from 'react';
-import { getPeople, Person } from '../../api-requests/GetPeople';
+import { getPeople, Person } from 'src/apiRequests/GetPeople';
 import './ResultPart.css';
+import { getPerson } from 'src/apiRequests/SearchPerson';
 
 type ResultPartState = {
-  people: Person[];
   isLoading: boolean;
 };
 
 type ResultProps = {
   searchName: string;
+  people: Person[];
 };
 
 export class ResultPart extends Component<ResultProps, ResultPartState> {
   constructor(props: ResultProps) {
     super(props);
     this.state = {
-      people: [],
       isLoading: true,
     };
   }
 
   componentDidMount() {
-    this.fetchPeople();
+    const searchName = localStorage.getItem('searchName');
+    if (searchName) {
+      this.fetchPerson(searchName);
+    } else {
+      this.fetchPeople();
+    }
   }
 
   componentDidUpdate(prevProps: ResultProps) {
     const { searchName } = this.props;
     if (searchName !== prevProps.searchName) {
-      this.fetchPeople();
+      this.fetchPerson(searchName);
     }
   }
 
   fetchPeople = () => {
-    getPeople().then((people) => {
-      const { searchName } = this.props;
+    getPeople().then(() => {
+      this.setState({ isLoading: false });
+    });
+  };
+
+  fetchPerson = (searchName: string) => {
+    const { people } = this.props;
+    getPerson(searchName).then(() => {
       const searchLower = searchName.toLowerCase();
-      this.setState({
-        people: searchName
-          ? people.filter(
-              (person) =>
-                person.name.toLowerCase().indexOf(searchLower) !== -1 || person.name === searchName,
-            )
-          : people,
-        isLoading: false,
-      });
+      people.filter(
+        (person) => person.name.toLowerCase().includes(searchLower) || person.name === searchName,
+      );
+      this.setState({ isLoading: false });
     });
   };
 
   render() {
-    const { people, isLoading } = this.state;
+    const { isLoading } = this.state;
+    const { people } = this.props;
     if (isLoading) {
       return (
         <div className="container">

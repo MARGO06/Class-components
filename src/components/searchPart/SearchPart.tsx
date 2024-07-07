@@ -4,6 +4,7 @@ import './SearchPart.css';
 interface SearchState {
   inputValue: string;
   hasError: boolean;
+  errorMessage: string;
 }
 type SearchProps = {
   onSearch: (searchValue: string) => void;
@@ -15,6 +16,7 @@ export class SearchPart extends Component<SearchProps, SearchState> {
     this.state = {
       inputValue: localStorage.getItem('search') ?? '',
       hasError: false,
+      errorMessage: ' ',
     };
   }
 
@@ -28,8 +30,13 @@ export class SearchPart extends Component<SearchProps, SearchState> {
   handleNameSave = () => {
     const { inputValue } = this.state;
     const { onSearch } = this.props;
-    localStorage.setItem('search', inputValue);
-    onSearch(inputValue);
+    if (inputValue.endsWith(' ')) {
+      this.setState({ errorMessage: 'Please remove the space at the end of the line' });
+    } else {
+      this.setState({ errorMessage: ' ' });
+      localStorage.setItem('search', inputValue);
+      onSearch(inputValue);
+    }
   };
 
   handleError = () => {
@@ -37,7 +44,7 @@ export class SearchPart extends Component<SearchProps, SearchState> {
   };
 
   render() {
-    const { inputValue, hasError } = this.state;
+    const { inputValue, hasError, errorMessage } = this.state;
     if (hasError) {
       throw new Error('Mistake');
     }
@@ -55,6 +62,7 @@ export class SearchPart extends Component<SearchProps, SearchState> {
         <button type="button" className="button-error" onClick={this.handleError}>
           Error
         </button>
+        {errorMessage && <div className="error-input">{errorMessage}</div>}
       </section>
     );
   }
