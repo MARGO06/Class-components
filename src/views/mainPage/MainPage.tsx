@@ -1,67 +1,57 @@
-import { Component } from 'react';
+import { useState, createContext, useMemo, useCallback } from 'react';
 import { ResultPart } from 'src/components/resultPart/ResultPart';
 import { SearchPart } from 'src/components/searchPart/SearchPart';
-import { getPeople, Person } from 'src/apiRequests/GetPeople';
+import { Person } from 'src/apiRequests/GetPeople';
 import { getPerson } from 'src/apiRequests/SearchPerson';
-import '../../components/resultPart/ResultPart.css';
+import style from 'src/components/resultPart/ResultPart.module.scss';
+import styles from 'src/views/mainPage/MainPage.module.scss';
 
-type MainState = {
-  inputValue: string;
-  isLoading: boolean;
+export type PeopleContextType = {
   people: Person[];
+  handleSearch: (searchValue: string) => void;
 };
+export const PeopleContext = createContext<PeopleContextType>({
+  people: [],
+  handleSearch: () => {},
+});
 
-export class MainPage extends Component<Record<string, never>, MainState> {
-  constructor(props: Record<string, never>) {
-    super(props);
-    this.state = {
-      inputValue: localStorage.getItem('search') ?? '',
-      isLoading: false,
-      people: [],
-    };
-  }
+export const MainPage: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [people, setPeople] = useState<Person[]>([]);
 
-  componentDidMount() {
-    this.fetchPeople();
-  }
+  const handlePerson = useCallback(async (searchName: string) => {
+    const result = await getPerson(searchName);
+    setIsLoading(false);
+    setPeople(result);
+  }, []);
 
-  handleSearch = (searchValue: string) => {
-    this.setState({ inputValue: searchValue, isLoading: true });
-    this.fetchPerson(searchValue);
-  };
-
-  fetchPeople = () => {
-    getPeople().then((people) => {
-      this.setState({
-        isLoading: false,
-        people,
+  const handleSearch = useCallback(
+    (searchValue: string) => {
+      localStorage.setItem('searchName', searchValue);
+      setIsLoading(true);
+      handlePerson(searchValue).catch(() => {
+        setIsLoading(false);
       });
-    });
-  };
+    },
+    [handlePerson],
+  );
 
-  fetchPerson = (searchName: string) => {
-    getPerson(searchName).then((people) => {
-      this.setState({
-        isLoading: false,
-        people,
-      });
-    });
-  };
+  const contextValue = useMemo(() => {
+    return { people, handleSearch };
+  }, [people, handleSearch]);
 
-  render() {
-    const { inputValue, isLoading, people } = this.state;
-
-    return (
-      <div className="wrapper">
-        <SearchPart onSearch={this.handleSearch} />
+  return (
+    <PeopleContext.Provider value={contextValue}>
+      <div className={styles.wrapper}>
+        <SearchPart />
         {isLoading ? (
-          <div className="container">
-            <div className="loading" />
+          <div className={style.container}>
+            <div className={style.loading} />
           </div>
         ) : (
-          <ResultPart searchName={inputValue} people={people} />
+          <ResultPart />
         )}
       </div>
-    );
-  }
-}
+    </PeopleContext.Provider>
+  );
+};

@@ -1,69 +1,52 @@
-import { Component } from 'react';
-import './SearchPart.css';
+import { useState, useContext, useEffect } from 'react';
+import { Button } from 'src/components/button/Button';
+import { Input } from 'src/components/input/Input';
+import { PeopleContext } from 'src/views/mainPage/MainPage';
+import style from 'src/components/searchPart/SearchPart.module.scss';
 
-interface SearchState {
-  inputValue: string;
-  hasError: boolean;
-  errorMessage: string;
-}
-type SearchProps = {
-  onSearch: (searchValue: string) => void;
-};
+export const SearchPart: React.FC = () => {
+  const [inputValue, setInputValue] = useState(localStorage.getItem('searchName') ?? '');
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const { handleSearch } = useContext(PeopleContext);
 
-export class SearchPart extends Component<SearchProps, SearchState> {
-  constructor(props: SearchProps) {
-    super(props);
-    this.state = {
-      inputValue: localStorage.getItem('search') ?? '',
-      hasError: false,
-      errorMessage: ' ',
-    };
-  }
-
-  handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
-    this.setState({
-      inputValue: newName,
-    });
+    setInputValue(newName);
   };
 
-  handleNameSave = () => {
-    const { inputValue } = this.state;
-    const { onSearch } = this.props;
+  const handleNameSave = () => {
     if (inputValue.endsWith(' ')) {
-      this.setState({ errorMessage: 'Please remove the space at the end of the line' });
+      setErrorMessage('Please remove the space at the end of the line');
     } else {
-      this.setState({ errorMessage: ' ' });
-      localStorage.setItem('search', inputValue);
-      onSearch(inputValue);
+      localStorage.setItem('searchName', inputValue);
+      handleSearch(inputValue);
     }
   };
 
-  handleError = () => {
-    this.setState({ hasError: true });
-  };
+  const handleError = () => setHasError(true);
 
-  render() {
-    const { inputValue, hasError, errorMessage } = this.state;
-    if (hasError) {
-      throw new Error('Mistake');
+  useEffect(() => {
+    const searchName = localStorage.getItem('searchName');
+    if (searchName) {
+      setInputValue(searchName);
+      handleSearch(searchName);
     }
-    return (
-      <section className="searchPart">
-        <input
-          id="main-input"
-          placeholder="name"
-          value={inputValue}
-          onChange={this.handleNameChange}
-        />
-        <button type="button" className="button-search" onClick={this.handleNameSave}>
-          Search
-        </button>
-        <button type="button" className="button-error" onClick={this.handleError}>
-          Error
-        </button>
-        {errorMessage && <div className="error-input">{errorMessage}</div>}
-      </section>
-    );
-  }
-}
+  }, [handleSearch]);
+
+  if (hasError) throw new Error('Mistake');
+
+  return (
+    <section className={style.searchPart}>
+      <Input
+        id={style.input_main}
+        placeholder="name"
+        value={inputValue}
+        onChange={handleNameChange}
+      />
+      <Button title="Search" className={style.button_search} onClick={handleNameSave} />
+      <Button title="Error" className={style.button_error} onClick={handleError} />
+      {errorMessage && <div className={style.error_input}>{errorMessage}</div>}
+    </section>
+  );
+};

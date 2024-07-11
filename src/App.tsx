@@ -1,8 +1,8 @@
 import { MainPage } from './views/mainPage/MainPage';
 import './App.css';
 
-function App() {
+const App = () => {
   return <MainPage />;
-}
+};
 
 export default App;
