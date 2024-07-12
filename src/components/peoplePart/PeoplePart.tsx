@@ -36,7 +36,7 @@ export const PeopleResult: React.FC = () => {
   return (
     <>
       {peopleState.map(({ url, name, birth_year, gender, eye_color, hair_color, mass, height }) => (
-        <div className="person" key={url}>
+        <div className={style.person} key={url}>
           <Text tag="h2" className={style.name} title={name} />
           <p className={style.description}>
             This person was born in the year {birth_year}.{' '}

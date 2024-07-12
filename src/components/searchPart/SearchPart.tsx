@@ -2,10 +2,11 @@ import { useState, useContext, useEffect } from 'react';
 import { Button } from 'src/components/button/Button';
 import { Input } from 'src/components/input/Input';
 import { PeopleContext } from 'src/views/mainPage/MainPage';
+import { useSaveName } from 'src/hooks/SaveName';
 import style from 'src/components/searchPart/SearchPart.module.scss';
 
 export const SearchPart: React.FC = () => {
-  const [inputValue, setInputValue] = useState(localStorage.getItem('searchName') ?? '');
+  const [inputValue, setInputValue] = useSaveName();
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { handleSearch } = useContext(PeopleContext);
@@ -19,7 +20,6 @@ export const SearchPart: React.FC = () => {
     if (inputValue.endsWith(' ')) {
       setErrorMessage('Please remove the space at the end of the line');
     } else {
-      localStorage.setItem('searchName', inputValue);
       handleSearch(inputValue);
     }
   };
@@ -32,7 +32,7 @@ export const SearchPart: React.FC = () => {
       setInputValue(searchName);
       handleSearch(searchName);
     }
-  }, [handleSearch]);
+  }, [handleSearch, setInputValue]);
 
   if (hasError) throw new Error('Mistake');
 
