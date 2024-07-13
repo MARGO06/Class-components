@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { getPeople, Person } from 'src/apiRequests/GetPeople';
+import { Person } from 'src/apiRequests/GetPeople';
 import { Text } from 'src/components/text/Text';
 import { getPerson } from 'src/apiRequests/SearchPerson';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/views/mainPage/MainPage';
+import { getPeopleOnPage } from 'src/apiRequests/GetPeoplePage';
 
 export const PeopleResult: React.FC = () => {
   const [peopleState, setPeopleState] = useState<Person[]>([]);
   const { people } = useContext(PeopleContext);
+  const { pageCurrent } = useContext(PeopleContext);
 
   const handlePerson = useCallback(
-    (searchName: string) => {
+    async (searchName: string) => {
       getPerson(searchName).then(() => {
         const searchLower = searchName.toLowerCase();
         const filterPeople = people.filter(
@@ -22,16 +24,20 @@ export const PeopleResult: React.FC = () => {
     [people],
   );
 
+  const handlePeopleOnPage = useCallback(async () => {
+    const search = localStorage.getItem('searchName') ?? '';
+    const result = await getPeopleOnPage(search, pageCurrent);
+    setPeopleState(result);
+  }, [pageCurrent]);
+
   useEffect(() => {
     const searchName = localStorage.getItem('searchName');
     if (searchName) {
       handlePerson(searchName);
     } else {
-      getPeople().then((response) => {
-        setPeopleState(response);
-      });
+      handlePeopleOnPage();
     }
-  }, [handlePerson]);
+  }, [handlePeopleOnPage, handlePerson]);
 
   return (
     <>

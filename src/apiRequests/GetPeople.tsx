@@ -14,7 +14,7 @@ export type Person = {
 };
 
 export type People = {
-  count: number;
+  count: string;
   next: string;
   previous: string;
   results: Person[];

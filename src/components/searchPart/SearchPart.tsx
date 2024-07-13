@@ -2,14 +2,16 @@ import { useState, useContext, useEffect } from 'react';
 import { Button } from 'src/components/button/Button';
 import { Input } from 'src/components/input/Input';
 import { PeopleContext } from 'src/views/mainPage/MainPage';
-import { useSaveName } from 'src/hooks/SaveName';
 import style from 'src/components/searchPart/SearchPart.module.scss';
+import { useSaveName } from 'src/hooks/SaveName';
+import { useNavigate } from 'react-router-dom';
 
 export const SearchPart: React.FC = () => {
   const [inputValue, setInputValue] = useSaveName();
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { handleSearch } = useContext(PeopleContext);
+  const navigation = useNavigate();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
@@ -21,6 +23,7 @@ export const SearchPart: React.FC = () => {
       setErrorMessage('Please remove the space at the end of the line');
     } else {
       handleSearch(inputValue);
+      navigation(`?search=${inputValue}&page=1`);
     }
   };
 
@@ -32,7 +35,7 @@ export const SearchPart: React.FC = () => {
       setInputValue(searchName);
       handleSearch(searchName);
     }
-  }, [handleSearch, setInputValue]);
+  }, [setInputValue, handleSearch]);
 
   if (hasError) throw new Error('Mistake');
 

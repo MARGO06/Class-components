@@ -5,6 +5,7 @@ export const getPerson = async (inputValue: string) => {
     method: 'GET',
   });
   const people: People = await response.json();
+  const { count } = people;
   const person = people.results;
-  return person;
+  return { person, count };
 };

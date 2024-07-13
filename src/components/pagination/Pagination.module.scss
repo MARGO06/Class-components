@@ -1,0 +1,17 @@
+.pagination {
+  display: flex;
+  margin: 0 auto;
+  width: 30%;
+  justify-content: space-between;
+}
+.paginate {
+  list-style-type: none;
+  &.active {
+    background-color: brown;
+  }
+}
+
+.page {
+  color: aqua;
+  font-size: 1.6rem;
+}

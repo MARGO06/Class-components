@@ -29,6 +29,7 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
     'import/prefer-default-export': 'off',
+    'react/prop-types': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'react/function-component-definition': [
       2,

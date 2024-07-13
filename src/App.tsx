@@ -1,8 +1,8 @@
-import { MainPage } from 'src/views/mainPage/MainPage';
+import { Router } from 'src/components/router/Router';
 import 'src/App.css';
 
 const App = () => {
-  return <MainPage />;
+  return <Router />;
 };
 
 export default App;
