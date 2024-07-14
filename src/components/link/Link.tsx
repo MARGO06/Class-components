@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 type LinkProps = {
   to: string;
   className: string;
-  onClick: (e: React.MouseEvent) => void;
+  onClick?: (e: React.MouseEvent) => void;
   children: React.ReactNode;
 };
 

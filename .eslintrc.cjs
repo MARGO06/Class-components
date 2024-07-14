@@ -26,6 +26,7 @@ module.exports = {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     '@typescript-eslint/no-explicit-any': 'error',
     'react-compiler/react-compiler': 'error',
+    'react/require-default-props': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
     'import/prefer-default-export': 'off',

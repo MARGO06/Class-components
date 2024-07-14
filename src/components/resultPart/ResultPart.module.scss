@@ -12,6 +12,12 @@
 
 .person {
   width: 46%;
+  background-color: #aaeae1;
+  padding: 10px;
+  border-radius: 50px;
+  &:hover {
+    background-color: rgb(84, 217, 227);
+  }
 }
 
 .name {
@@ -22,7 +28,6 @@
   font-size: 1.6rem;
   margin-top: 10px;
   line-height: 2.5rem;
-  color: aliceblue;
 }
 
 .container {

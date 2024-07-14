@@ -7,23 +7,26 @@ import { Pagination } from 'src/components/pagination/Pagination';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import styles from 'src/views/mainPage/MainPage.module.scss';
 import { getPeopleOnPage } from 'src/apiRequests/GetPeoplePage';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 export type PeopleContextType = {
   people: Person[];
   handleSearch: (searchValue: string) => void;
   pageCurrent: number;
+  handleClickLink: (e: React.MouseEvent) => void;
 };
 export const PeopleContext = createContext<PeopleContextType>({
   people: [],
   handleSearch: () => {},
   pageCurrent: 1,
+  handleClickLink: () => {},
 });
 
 const MainPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [people, setPeople] = useState<Person[]>([]);
   const [pageCurrent, setPageCurrent] = useState(1);
+  const [isActive, setIsActive] = useState(false);
   const navigation = useNavigate();
   const location = useLocation();
 
@@ -46,6 +49,28 @@ const MainPage: React.FC = () => {
     [handlePerson, navigation],
   );
 
+  const handleSearchParams = useCallback(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchName = searchParams.get('search') || '';
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    return { searchName, page };
+  }, [location.search]);
+
+  const handleClickLink = useCallback(() => {
+    setIsActive(true);
+  }, []);
+
+  const handleMainClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const { searchName, page } = handleSearchParams();
+      if (e.target === e.currentTarget) {
+        setIsActive(false);
+        navigation(`/RS-School_React/?search=${searchName}&page=${page}`);
+      }
+    },
+    [handleSearchParams, navigation],
+  );
+
   const handlePageClick = useCallback(
     async (searchValue: string, page: number) => {
       setIsLoading(true);
@@ -59,13 +84,11 @@ const MainPage: React.FC = () => {
   );
 
   const contextValue = useMemo(() => {
-    return { people, handleSearch, pageCurrent };
-  }, [people, handleSearch, pageCurrent]);
+    return { people, handleSearch, pageCurrent, handleClickLink };
+  }, [people, handleSearch, pageCurrent, handleClickLink]);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const searchName = searchParams.get('search') || '';
-    const page = parseInt(searchParams.get('page') || '1', 10);
+    const { searchName, page } = handleSearchParams();
 
     if (!searchName) {
       getPeople().then((response) => {
@@ -74,22 +97,37 @@ const MainPage: React.FC = () => {
         setPageCurrent(page);
       });
     }
-  }, [location.search]);
+  }, [handleSearchParams]);
 
   return (
     <PeopleContext.Provider value={contextValue}>
-      <div className={styles.wrapper}>
-        <SearchPart />
-        {isLoading ? (
-          <div className={style.container}>
-            <div className={style.loading} />
-          </div>
-        ) : (
-          <>
-            <ResultPart />
-            <Pagination onClick={handlePageClick} pageCurrent={pageCurrent} />
-          </>
-        )}
+      <div className={`${styles.wrapper}  ${isActive ? styles.active : ''}`}>
+        <div
+          className={`${styles.main} ${isActive ? styles.active : ''}`}
+          onClick={handleMainClick}
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              handleMainClick(e as unknown as React.MouseEvent<HTMLDivElement>);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <SearchPart />
+          {isLoading ? (
+            <div className={style.container}>
+              <div className={style.loading} />
+            </div>
+          ) : (
+            <>
+              <ResultPart />
+              <Pagination onClick={handlePageClick} pageCurrent={pageCurrent} />
+            </>
+          )}
+        </div>
+        <div id="detail" className={style.detail}>
+          <Outlet />
+        </div>
       </div>
     </PeopleContext.Provider>
   );

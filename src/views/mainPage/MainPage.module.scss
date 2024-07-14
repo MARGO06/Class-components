@@ -1,4 +1,11 @@
 .wrapper {
   max-width: 1440px;
   margin: 0 auto;
+  &.active {
+    display: flex;
+  }
+}
+
+.main.active {
+  width: 50%;
 }

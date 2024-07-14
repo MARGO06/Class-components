@@ -1,0 +1,22 @@
+.wrapper {
+  width: 100%;
+  margin-top: 150px;
+}
+
+.information {
+  border-radius: 50%;
+}
+
+.dates {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 500px;
+  background-color: azure;
+}
+
+.inform,
+.name {
+  background-color: azure;
+}
