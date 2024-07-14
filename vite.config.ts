@@ -6,4 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   base: '/RS-School_React/',
   plugins: [tsconfigPaths(), react()],
+  test: {
+    environment: 'jsdom',
+  },
 });
