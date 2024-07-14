@@ -27,6 +27,6 @@ p {
   font-size: 1.6rem;
 }
 
-.root {
-  height: 100vh;
+#root {
+  padding: 0px;
 }

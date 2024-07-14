@@ -3,17 +3,18 @@ import { Person } from 'src/apiRequests/GetPeople';
 import { Text } from 'src/components/text/Text';
 import { getPerson } from 'src/apiRequests/SearchPerson';
 import style from 'src/components/resultPart/ResultPart.module.scss';
-import { PeopleContext } from 'src/views/mainPage/MainPage';
+import { PeopleContext } from 'src/hooks/ContextHook';
 import { getPeopleOnPage } from 'src/apiRequests/GetPeoplePage';
 import { Link } from 'src/components/link/Link';
 import { useLocation } from 'react-router-dom';
+import { handleSearchParams } from 'src/utils/SearchParams';
 
 export const PeopleResult: React.FC = () => {
   const [peopleState, setPeopleState] = useState<Person[]>([]);
-  const { people } = useContext(PeopleContext);
-  const { pageCurrent } = useContext(PeopleContext);
-  const { handleClickLink } = useContext(PeopleContext);
+  const { people, pageCurrent, handleClickLink, isActive } = useContext(PeopleContext);
   const location = useLocation();
+
+  const nameSearch = localStorage.getItem('searchName') ?? '';
 
   const handlePerson = useCallback(
     async (searchName: string) => {
@@ -29,30 +30,26 @@ export const PeopleResult: React.FC = () => {
   );
 
   const handlePeopleOnPage = useCallback(async () => {
-    const search = localStorage.getItem('searchName') ?? '';
-    const result = await getPeopleOnPage(search, pageCurrent);
+    const result = await getPeopleOnPage(nameSearch, pageCurrent);
     setPeopleState(result);
-  }, [pageCurrent]);
+  }, [nameSearch, pageCurrent]);
 
   useEffect(() => {
-    const searchName = localStorage.getItem('searchName');
-    if (searchName) {
-      handlePerson(searchName);
+    if (nameSearch) {
+      handlePerson(nameSearch);
     } else {
       handlePeopleOnPage();
     }
-  }, [handlePeopleOnPage, handlePerson]);
+  }, [handlePeopleOnPage, handlePerson, nameSearch]);
 
-  const searchParams = new URLSearchParams(location.search);
-  const searchName = searchParams.get('search') || '';
-  const page = parseInt(searchParams.get('page') || '1', 10);
+  const { searchName, page } = handleSearchParams(location.search);
 
   return (
     <>
       {peopleState.map(({ url, name, birth_year, gender, eye_color, hair_color, mass, height }) => (
         <Link
           to={`details/name=${name}/?search=${searchName}&page=${page}`}
-          className={style.person}
+          className={`${style.person} ${isActive ? style.active : ''}`}
           key={url}
           onClick={handleClickLink}
         >

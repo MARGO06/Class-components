@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { getAllPeople } from 'src/apiRequests/GetAllPeople';
 import { getPerson } from 'src/apiRequests/SearchPerson';
 import { Link } from 'src/components/link/Link';
+import { createPages } from 'src/utils/CreatePages';
 import style from 'src/components/pagination/Pagination.module.scss';
 
 type PaginationProps = {
@@ -12,36 +13,33 @@ type PaginationProps = {
 export const Pagination: React.FC<PaginationProps> = ({ onClick, pageCurrent }) => {
   const [currentPage, setCurrentPage] = useState<number[]>([]);
 
+  const nameSearch = localStorage.getItem('searchName') ?? '';
+
   const countPagesSearch = useCallback(async (searchName: string) => {
     const result = await getPerson(searchName);
-    const countPage = Math.ceil(Number(result.count) / 10);
-    const pages = Array.from({ length: countPage }, (_, i) => i + 1);
+    const pages = createPages(result.count);
     setCurrentPage(pages);
   }, []);
 
   useEffect(() => {
-    const searchName = localStorage.getItem('searchName');
-    if (!searchName) {
+    if (!nameSearch) {
       getAllPeople().then((response) => {
-        const countPages = Math.ceil(Number(response.count) / 10);
-        const pages = Array.from({ length: countPages }, (_, i) => i + 1);
+        const pages = createPages(response.count);
         setCurrentPage(pages);
       });
     } else {
-      countPagesSearch(searchName);
+      countPagesSearch(nameSearch);
     }
-  }, [countPagesSearch]);
-
-  const search = localStorage.getItem('searchName') ?? '';
+  }, [countPagesSearch, nameSearch]);
 
   return (
     <div className={style.pagination}>
       {currentPage.map((page) => (
         <li key={page} className={`${style.paginate} ${pageCurrent === page ? style.active : ' '}`}>
           <Link
-            to={`?search=${search}&page=${page}`}
+            to={`?search=${nameSearch}&page=${page}`}
             className={style.page}
-            onClick={() => onClick(search, page)}
+            onClick={() => onClick(nameSearch, page)}
           >
             {page}
           </Link>

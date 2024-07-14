@@ -8,6 +8,24 @@
   margin-top: 100px;
   margin-bottom: 50px;
   gap: 50px;
+  &.active {
+    margin-left: auto;
+    margin-right: auto;
+    height: 80vh;
+    overflow-y: scroll;
+    gap: 2px;
+  }
+  &.active::-webkit-scrollbar {
+    width: 12px;
+  }
+  &.active::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  &.active::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
 }
 
 .person {
@@ -17,6 +35,10 @@
   border-radius: 50px;
   &:hover {
     background-color: rgb(84, 217, 227);
+  }
+  &.active {
+    width: 100%;
+    border-radius: 0;
   }
 }
 

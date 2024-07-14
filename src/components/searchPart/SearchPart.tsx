@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Button } from 'src/components/button/Button';
 import { Input } from 'src/components/input/Input';
-import { PeopleContext } from 'src/views/mainPage/MainPage';
+import { PeopleContext } from 'src/hooks/ContextHook';
 import style from 'src/components/searchPart/SearchPart.module.scss';
 import { useSaveName } from 'src/hooks/SaveName';
 import { useNavigate } from 'react-router-dom';
@@ -10,12 +10,11 @@ export const SearchPart: React.FC = () => {
   const [inputValue, setInputValue] = useSaveName();
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const { handleSearch } = useContext(PeopleContext);
+  const { handleSearch, isActive } = useContext(PeopleContext);
   const navigation = useNavigate();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value;
-    setInputValue(newName);
+    setInputValue(e.target.value);
   };
 
   const handleNameSave = () => {
@@ -40,7 +39,7 @@ export const SearchPart: React.FC = () => {
   if (hasError) throw new Error('Mistake');
 
   return (
-    <section className={style.searchPart}>
+    <section className={`${style.searchPart} ${isActive ? style.active : ''}`}>
       <Input
         id={style.input_main}
         placeholder="name"

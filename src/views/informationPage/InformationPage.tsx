@@ -1,20 +1,33 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import style from 'src/views/informationPage/InformationPage.module.scss';
 import { Person } from 'src/apiRequests/GetPeople';
 import { getPerson } from 'src/apiRequests/SearchPerson';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import closeIcon from 'src/assets/close_button.png';
+import { PeopleContext } from 'src/hooks/ContextHook';
+import { handleSearchParams } from 'src/utils/SearchParams';
+import { getName } from 'src/utils/GetName';
 
 export const InformationPage: React.FC = () => {
   const [information, setInformation] = useState<Person[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+  const navigation = useNavigate();
+  const { setIsActive } = useContext(PeopleContext);
 
   const handlePerson = useCallback(() => {
-    const searchParams = location.pathname.split('/').splice(-2, 1)[0];
-    const name = decodeURIComponent(searchParams.split('=')[1]);
+    const name = getName(location.pathname);
     getPerson(name).then((data) => {
       setInformation(data.person);
+      setIsLoading(false);
     });
   }, [location.pathname]);
+
+  const handleCloseClick = () => {
+    const { searchName, page } = handleSearchParams(location.search);
+    setIsActive(false);
+    navigation(`/RS-School_React/?search=${searchName}&page=${page}`);
+  };
 
   useEffect(() => {
     handlePerson();
@@ -22,38 +35,57 @@ export const InformationPage: React.FC = () => {
 
   return (
     <div className={style.wrapper}>
-      <div className={style.information}>
-        {information.map(
-          ({
-            name,
-            birth_year,
-            created,
-            edited,
-            eye_color,
-            gender,
-            hair_color,
-            height,
-            homeworld,
-            mass,
-            skin_color,
-            url,
-          }) => (
-            <div className={style.dates} key={url}>
-              <h2 className={style.name}>Name: {name}</h2>
-              <p className={style.inform}>Birthday: {birth_year}</p>
-              <p className={style.inform}>Created: {created}</p>
-              <p className={style.inform}>Edited: {edited}</p>
-              <p className={style.inform}>Eye color: {eye_color}</p>
-              <p className={style.inform}>Gender: {gender}</p>
-              <p className={style.inform}>Hair color: {hair_color}</p>
-              <p className={style.inform}>Height: {height}</p>
-              <p className={style.inform}>Home world: {homeworld}</p>
-              <p className={style.inform}>Weight: {mass}</p>
-              <p className={style.inform}>Skin color: {skin_color}</p>
-            </div>
-          ),
-        )}
-      </div>
+      {isLoading ? (
+        <div className={style.container}>
+          <div className={style.loading} />
+        </div>
+      ) : (
+        <div className={style.information}>
+          {information.map(
+            ({
+              name,
+              birth_year,
+              created,
+              edited,
+              eye_color,
+              gender,
+              hair_color,
+              height,
+              homeworld,
+              mass,
+              skin_color,
+              url,
+            }) => (
+              <div className={style.dates} key={url}>
+                <h2 className={style.name}>Name: {name}</h2>
+                <p>Birthday: {birth_year}</p>
+                <p>Created: {created}</p>
+                <p>Edited: {edited}</p>
+                <p>Eye color: {eye_color}</p>
+                <p>Gender: {gender}</p>
+                <p>Hair color: {hair_color}</p>
+                <p>Height: {height}</p>
+                <p>Home world: {homeworld}</p>
+                <p>Weight: {mass}</p>
+                <p>Skin color: {skin_color}</p>
+              </div>
+            ),
+          )}
+          <div
+            className={style.button_close}
+            onClick={handleCloseClick}
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleCloseClick();
+              }
+            }}
+            role="button"
+            tabIndex={0}
+          >
+            <img src={closeIcon} className={style.button_close} alt="close_image" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

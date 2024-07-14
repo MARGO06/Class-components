@@ -1,4 +1,4 @@
-import { useState, createContext, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { ResultPart } from 'src/components/resultPart/ResultPart';
 import { SearchPart } from 'src/components/searchPart/SearchPart';
 import { Person, getPeople } from 'src/apiRequests/GetPeople';
@@ -8,19 +8,8 @@ import style from 'src/components/resultPart/ResultPart.module.scss';
 import styles from 'src/views/mainPage/MainPage.module.scss';
 import { getPeopleOnPage } from 'src/apiRequests/GetPeoplePage';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-
-export type PeopleContextType = {
-  people: Person[];
-  handleSearch: (searchValue: string) => void;
-  pageCurrent: number;
-  handleClickLink: (e: React.MouseEvent) => void;
-};
-export const PeopleContext = createContext<PeopleContextType>({
-  people: [],
-  handleSearch: () => {},
-  pageCurrent: 1,
-  handleClickLink: () => {},
-});
+import { handleSearchParams } from 'src/utils/SearchParams';
+import { PeopleContext } from 'src/hooks/ContextHook';
 
 const MainPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -49,26 +38,19 @@ const MainPage: React.FC = () => {
     [handlePerson, navigation],
   );
 
-  const handleSearchParams = useCallback(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const searchName = searchParams.get('search') || '';
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    return { searchName, page };
-  }, [location.search]);
-
   const handleClickLink = useCallback(() => {
     setIsActive(true);
   }, []);
 
   const handleMainClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      const { searchName, page } = handleSearchParams();
+      const { searchName, page } = handleSearchParams(location.search);
       if (e.target === e.currentTarget) {
         setIsActive(false);
         navigation(`/RS-School_React/?search=${searchName}&page=${page}`);
       }
     },
-    [handleSearchParams, navigation],
+    [location.search, navigation],
   );
 
   const handlePageClick = useCallback(
@@ -84,11 +66,11 @@ const MainPage: React.FC = () => {
   );
 
   const contextValue = useMemo(() => {
-    return { people, handleSearch, pageCurrent, handleClickLink };
-  }, [people, handleSearch, pageCurrent, handleClickLink]);
+    return { people, handleSearch, pageCurrent, handleClickLink, setIsActive, isActive };
+  }, [people, handleSearch, pageCurrent, handleClickLink, setIsActive, isActive]);
 
   useEffect(() => {
-    const { searchName, page } = handleSearchParams();
+    const { searchName, page } = handleSearchParams(location.search);
 
     if (!searchName) {
       getPeople().then((response) => {
@@ -97,7 +79,7 @@ const MainPage: React.FC = () => {
         setPageCurrent(page);
       });
     }
-  }, [handleSearchParams]);
+  }, [location.search]);
 
   return (
     <PeopleContext.Provider value={contextValue}>
