@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { Person } from 'src/apiRequests/GetPeople';
+import { Person, api } from 'src/apiRequests/GetPeople';
 import { Text } from 'src/components/text/Text';
-import { getPerson } from 'src/apiRequests/SearchPerson';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import { getPeopleOnPage } from 'src/apiRequests/GetPeoplePage';
-import { Link } from 'src/components/link/Link';
-import { useLocation } from 'react-router-dom';
+import { getName } from 'src/utils/GetLocalStorage';
+import { useLocation, Link } from 'react-router-dom';
+import { findPeople } from 'src/utils/FindPeople';
 import { handleSearchParams } from 'src/utils/SearchParams';
 
 export const PeopleResult: React.FC = () => {
@@ -14,24 +13,21 @@ export const PeopleResult: React.FC = () => {
   const { people, pageCurrent, handleClickLink, isActive } = useContext(PeopleContext);
   const location = useLocation();
 
-  const nameSearch = localStorage.getItem('searchName') ?? '';
+  const nameSearch = getName('searchName');
 
   const handlePerson = useCallback(
     async (searchName: string) => {
-      getPerson(searchName).then(() => {
-        const searchLower = searchName.toLowerCase();
-        const filterPeople = people.filter(
-          (person) => person.name.toLowerCase().includes(searchLower) || person.name === searchName,
-        );
-        setPeopleState(filterPeople);
-      });
+      await api.getPerson(searchName);
+      const searchLower = searchName.toLowerCase();
+      const filterPeople = findPeople(people, searchName, searchLower);
+      setPeopleState(filterPeople);
     },
     [people],
   );
 
   const handlePeopleOnPage = useCallback(async () => {
-    const result = await getPeopleOnPage(nameSearch, pageCurrent);
-    setPeopleState(result);
+    const resultPeople = await api.getPeopleOnPage(nameSearch, pageCurrent);
+    setPeopleState(resultPeople.results);
   }, [nameSearch, pageCurrent]);
 
   useEffect(() => {

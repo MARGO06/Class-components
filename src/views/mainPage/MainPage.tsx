@@ -1,12 +1,10 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { ResultPart } from 'src/components/resultPart/ResultPart';
 import { SearchPart } from 'src/components/searchPart/SearchPart';
-import { Person, getPeople } from 'src/apiRequests/GetPeople';
-import { getPerson } from 'src/apiRequests/SearchPerson';
+import { Person, api } from 'src/apiRequests/GetPeople';
 import { Pagination } from 'src/components/pagination/Pagination';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import styles from 'src/views/mainPage/MainPage.module.scss';
-import { getPeopleOnPage } from 'src/apiRequests/GetPeoplePage';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { handleSearchParams } from 'src/utils/SearchParams';
 import { PeopleContext } from 'src/hooks/ContextHook';
@@ -20,9 +18,9 @@ const MainPage: React.FC = () => {
   const location = useLocation();
 
   const handlePerson = useCallback(async (searchName: string) => {
-    const result = await getPerson(searchName);
+    const resultPeople = await api.getPerson(searchName);
     setIsLoading(false);
-    setPeople(result.person);
+    setPeople(resultPeople.results);
   }, []);
 
   const handleSearch = useCallback(
@@ -56,9 +54,9 @@ const MainPage: React.FC = () => {
   const handlePageClick = useCallback(
     async (searchValue: string, page: number) => {
       setIsLoading(true);
-      const result = await getPeopleOnPage(searchValue, page);
+      const resultPeople = await api.getPeopleOnPage(searchValue, page);
       setIsLoading(false);
-      setPeople(result);
+      setPeople(resultPeople.results);
       setPageCurrent(page);
       navigation(`?search=${searchValue}&page=${page}`);
     },
@@ -66,19 +64,28 @@ const MainPage: React.FC = () => {
   );
 
   const contextValue = useMemo(() => {
-    return { people, handleSearch, pageCurrent, handleClickLink, setIsActive, isActive };
-  }, [people, handleSearch, pageCurrent, handleClickLink, setIsActive, isActive]);
+    return { people, pageCurrent, handleClickLink, setIsActive, isActive };
+  }, [people, pageCurrent, handleClickLink, setIsActive, isActive]);
 
   useEffect(() => {
-    const { searchName, page } = handleSearchParams(location.search);
+    const { page } = handleSearchParams(location.search);
+    const searchName = localStorage.getItem('searchName');
 
-    if (!searchName) {
-      getPeople().then((response) => {
-        setPeople(response);
+    const showPeople = async () => {
+      if (searchName) {
+        const response = await api.getPerson(searchName);
+        setPeople(response.results);
         setIsLoading(false);
         setPageCurrent(page);
-      });
-    }
+      }
+      if (!searchName) {
+        const response = await api.getAllPeople();
+        setPeople(response.results);
+        setIsLoading(false);
+        setPageCurrent(page);
+      }
+    };
+    showPeople();
   }, [location.search]);
 
   return (
@@ -95,7 +102,7 @@ const MainPage: React.FC = () => {
           role="button"
           tabIndex={0}
         >
-          <SearchPart />
+          <SearchPart onSearchClick={handleSearch} />
           {isLoading ? (
             <div className={style.container}>
               <div className={style.loading} />
@@ -103,7 +110,7 @@ const MainPage: React.FC = () => {
           ) : (
             <>
               <ResultPart />
-              <Pagination onClick={handlePageClick} pageCurrent={pageCurrent} />
+              <Pagination onClick={handlePageClick} />
             </>
           )}
         </div>

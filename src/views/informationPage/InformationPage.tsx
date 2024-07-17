@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import style from 'src/views/informationPage/InformationPage.module.scss';
-import { Person } from 'src/apiRequests/GetPeople';
-import { getPerson } from 'src/apiRequests/SearchPerson';
+import { Person, api } from 'src/apiRequests/GetPeople';
 import { useLocation, useNavigate } from 'react-router-dom';
 import closeIcon from 'src/assets/close_button.png';
 import { PeopleContext } from 'src/hooks/ContextHook';
@@ -15,12 +14,11 @@ export const InformationPage: React.FC = () => {
   const navigation = useNavigate();
   const { setIsActive } = useContext(PeopleContext);
 
-  const handlePerson = useCallback(() => {
+  const handlePerson = useCallback(async () => {
     const name = getName(location.pathname);
-    getPerson(name).then((data) => {
-      setInformation(data.person);
-      setIsLoading(false);
-    });
+    const personResult = await api.getPerson(name);
+    setInformation(personResult.results);
+    setIsLoading(false);
   }, [location.pathname]);
 
   const handleCloseClick = () => {

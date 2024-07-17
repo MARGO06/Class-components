@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
-type ButtonProps = {
-  className: string;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   title: string;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export const Button: React.FC<ButtonProps> = ({ className, title, onClick }) => {

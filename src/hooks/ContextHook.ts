@@ -3,7 +3,6 @@ import { Person } from 'src/apiRequests/GetPeople';
 
 export type PeopleContextType = {
   people: Person[];
-  handleSearch: (searchValue: string) => void;
   pageCurrent: number;
   handleClickLink: (e: React.MouseEvent) => void;
   setIsActive: (isActive: boolean) => void;
@@ -11,7 +10,6 @@ export type PeopleContextType = {
 };
 export const PeopleContext = createContext<PeopleContextType>({
   people: [],
-  handleSearch: () => {},
   pageCurrent: 1,
   handleClickLink: () => {},
   setIsActive: () => {},

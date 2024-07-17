@@ -2,15 +2,20 @@ import { useState, useContext, useEffect } from 'react';
 import { Button } from 'src/components/button/Button';
 import { Input } from 'src/components/input/Input';
 import { PeopleContext } from 'src/hooks/ContextHook';
+import { getName } from 'src/utils/GetLocalStorage';
 import style from 'src/components/searchPart/SearchPart.module.scss';
 import { useSaveName } from 'src/hooks/SaveName';
 import { useNavigate } from 'react-router-dom';
 
-export const SearchPart: React.FC = () => {
+type SearchPartProps = {
+  onSearchClick: (searchValue: string) => void;
+};
+
+export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
   const [inputValue, setInputValue] = useSaveName();
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const { handleSearch, isActive } = useContext(PeopleContext);
+  const { isActive } = useContext(PeopleContext);
   const navigation = useNavigate();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +26,7 @@ export const SearchPart: React.FC = () => {
     if (inputValue.endsWith(' ')) {
       setErrorMessage('Please remove the space at the end of the line');
     } else {
-      handleSearch(inputValue);
+      onSearchClick(inputValue);
       navigation(`?search=${inputValue}&page=1`);
     }
   };
@@ -29,12 +34,12 @@ export const SearchPart: React.FC = () => {
   const handleError = () => setHasError(true);
 
   useEffect(() => {
-    const searchName = localStorage.getItem('searchName');
+    const searchName = getName('searchName');
     if (searchName) {
       setInputValue(searchName);
-      handleSearch(searchName);
+      onSearchClick(searchName);
     }
-  }, [setInputValue, handleSearch]);
+  }, [setInputValue, onSearchClick]);
 
   if (hasError) throw new Error('Mistake');
 

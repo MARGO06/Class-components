@@ -1,35 +1,39 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { getAllPeople } from 'src/apiRequests/GetAllPeople';
-import { getPerson } from 'src/apiRequests/SearchPerson';
-import { Link } from 'src/components/link/Link';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
+import { api } from 'src/apiRequests/GetPeople';
+import { Link } from 'react-router-dom';
 import { createPages } from 'src/utils/CreatePages';
+import { getName } from 'src/utils/GetLocalStorage';
 import style from 'src/components/pagination/Pagination.module.scss';
+import { PeopleContext } from 'src/hooks/ContextHook';
 
 type PaginationProps = {
   onClick: (search: string, page: number) => void;
-  pageCurrent: number;
 };
 
-export const Pagination: React.FC<PaginationProps> = ({ onClick, pageCurrent }) => {
+export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
   const [currentPage, setCurrentPage] = useState<number[]>([]);
+  const { pageCurrent } = useContext(PeopleContext);
 
-  const nameSearch = localStorage.getItem('searchName') ?? '';
+  const nameSearch = getName('searchName');
 
   const countPagesSearch = useCallback(async (searchName: string) => {
-    const result = await getPerson(searchName);
+    const result = await api.getPerson(searchName);
     const pages = createPages(result.count);
     setCurrentPage(pages);
   }, []);
 
   useEffect(() => {
-    if (!nameSearch) {
-      getAllPeople().then((response) => {
+    const showPages = async () => {
+      if (!nameSearch) {
+        const response = await api.getAllPeople();
         const pages = createPages(response.count);
         setCurrentPage(pages);
-      });
-    } else {
-      countPagesSearch(nameSearch);
-    }
+      } else {
+        countPagesSearch(nameSearch);
+      }
+    };
+
+    showPages();
   }, [countPagesSearch, nameSearch]);
 
   return (
