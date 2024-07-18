@@ -7,6 +7,8 @@ export default defineConfig({
   base: '/RS-School_React/',
   plugins: [tsconfigPaths(), react()],
   test: {
+    globals: true,
     environment: 'jsdom',
+    setupFiles: './setupTests.ts',
   },
 });

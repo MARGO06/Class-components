@@ -1,4 +1,5 @@
 export type Person = {
+  name: string;
   birth_year: string;
   created: string;
   edited: string;
@@ -8,7 +9,6 @@ export type Person = {
   height: string;
   homeworld: string;
   mass: string;
-  name: string;
   skin_color: string;
   url: string;
 };
