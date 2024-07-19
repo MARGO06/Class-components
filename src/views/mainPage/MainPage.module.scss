@@ -1,0 +1,16 @@
+.wrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+  &.active {
+    display: flex;
+  }
+}
+
+.main {
+  margin-bottom: 0;
+  background-color: #88b6bb;
+}
+
+.main.active {
+  width: 50%;
+}
