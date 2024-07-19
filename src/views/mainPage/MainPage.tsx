@@ -75,15 +75,14 @@ const MainPage: React.FC = () => {
       if (searchName) {
         const response = await api.getPerson(searchName);
         setPeople(response.results);
-        setIsLoading(false);
-        setPageCurrent(page);
       }
       if (!searchName) {
         const response = await api.getAllPeople();
         setPeople(response.results);
-        setIsLoading(false);
-        setPageCurrent(page);
       }
+
+      setIsLoading(false);
+      setPageCurrent(page);
     };
     showPeople();
   }, [location.search]);
