@@ -24,8 +24,8 @@ export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
 
   useEffect(() => {
     const showPages = async () => {
-      if (!nameSearch) {
-        const response = await api.getAllPeople();
+      if (nameSearch === ' ') {
+        const response = await api.getPerson(nameSearch);
         const pages = createPages(response.count);
         setCurrentPage(pages);
       } else {

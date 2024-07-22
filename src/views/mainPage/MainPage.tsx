@@ -76,8 +76,8 @@ const MainPage: React.FC = () => {
         const response = await api.getPerson(searchName);
         setPeople(response.results);
       }
-      if (!searchName) {
-        const response = await api.getAllPeople();
+      if (searchName === ' ') {
+        const response = await api.getPerson(searchName);
         setPeople(response.results);
       }
 
