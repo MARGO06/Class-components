@@ -1,38 +1,40 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { ResultPart } from 'src/components/resultPart/ResultPart';
+import { useState, useMemo, useCallback } from 'react';
 import { SearchPart } from 'src/components/searchPart/SearchPart';
-import { Person, People } from 'src/types';
+import { People } from 'src/types';
 import { Pagination } from 'src/components/pagination/Pagination';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import styles from 'src/views/mainPage/MainPage.module.scss';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { PeopleResult } from 'src/components/peoplePart/PeoplePart';
 import { handleSearchParams } from 'src/utils/SearchParams';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import { useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
+import { useGetPeopleOnPageQuery } from 'src/store/apiRequests/GetPeople';
+import { Loader } from 'src/components/loader/LoaderMain';
 
 const MainPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [people, setPeople] = useState<Person[]>([]);
   const [pageCurrent, setPageCurrent] = useState(1);
   const [isActive, setIsActive] = useState(false);
   const navigation = useNavigate();
   const location = useLocation();
   const { search } = location;
-  const name = new URLSearchParams(search).get('search') || '';
+  const nameS = new URLSearchParams(search).get('search') || '';
 
-  const { data } = useGetPersonQuery(name) as { data: People };
-
-  useEffect(() => {
-    if (data) {
-      setPeople(data.results);
-      setIsLoading(false);
-    }
-  }, [data]);
+  const {
+    data: peopleData,
+    isFetching,
+    isSuccess,
+  } = useGetPeopleOnPageQuery({
+    inputValue: nameS,
+    page: pageCurrent,
+  }) as {
+    data: People;
+    isFetching: boolean;
+    isSuccess: boolean;
+  };
 
   const handleSearch = useCallback(
     (searchValue: string) => {
       localStorage.setItem('searchName', searchValue);
-      setIsLoading(true);
       setPageCurrent(1);
       navigation(`?search=${searchValue}&page=1`);
     },
@@ -55,9 +57,7 @@ const MainPage: React.FC = () => {
   );
 
   const handlePageClick = useCallback(
-    async (searchValue: string, page: number) => {
-      setIsLoading(true);
-      setIsLoading(false);
+    (searchValue: string, page: number) => {
       setPageCurrent(page);
       navigation(`?search=${searchValue}&page=${page}`);
     },
@@ -65,25 +65,23 @@ const MainPage: React.FC = () => {
   );
 
   const contextValue = useMemo(() => {
-    return { people, pageCurrent, handleClickLink, setIsActive, isActive };
-  }, [people, pageCurrent, handleClickLink, setIsActive, isActive]);
+    return { peopleData, pageCurrent, handleClickLink, setIsActive, isActive };
+  }, [peopleData, pageCurrent, handleClickLink, setIsActive, isActive]);
 
-  useEffect(() => {
-    const { page } = handleSearchParams(location.search);
-    const searchName = localStorage.getItem('searchName');
+  let content;
 
-    const showPeople = async () => {
-      if (searchName) {
-        setIsLoading(true);
-        if (data) {
-          setPeople(data.results);
-        }
-        setPageCurrent(page);
-        setIsLoading(false);
-      }
-    };
-    showPeople();
-  }, [location.search, data]);
+  if (isFetching) {
+    content = <Loader />;
+  } else if (isSuccess) {
+    content = (
+      <>
+        <section className={`${style.people} ${isActive ? style.active : ''}`}>
+          <PeopleResult people={peopleData.results} />
+        </section>
+        <Pagination onClick={handlePageClick} />
+      </>
+    );
+  }
 
   return (
     <PeopleContext.Provider value={contextValue}>
@@ -98,18 +96,10 @@ const MainPage: React.FC = () => {
           }}
           role="button"
           tabIndex={0}
+          aria-label="Main container"
         >
           <SearchPart onSearchClick={handleSearch} />
-          {isLoading ? (
-            <div className={style.container}>
-              <div className={style.loading} />
-            </div>
-          ) : (
-            <>
-              <ResultPart />
-              <Pagination onClick={handlePageClick} />
-            </>
-          )}
+          {content}
         </div>
         <div id="detail" className={style.detail}>
           <Outlet />

@@ -15,13 +15,13 @@ export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
   const nameSearch = getName('searchName');
   const { data } = useGetPersonQuery(nameSearch) as { data: People };
   const count = Number(data?.count || 0);
-  const [currentPage, setCurrentPage] = useState<number[]>([]);
+  const [pagesAll, setPagesAll] = useState<number[]>([]);
   const { pageCurrent } = useContext(PeopleContext);
 
   useEffect(() => {
     const showPages = () => {
       const pages = createPages(count);
-      setCurrentPage(pages);
+      setPagesAll(pages);
     };
 
     showPages();
@@ -29,7 +29,7 @@ export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
 
   return (
     <div className={style.pagination}>
-      {currentPage.map((page) => (
+      {pagesAll.map((page) => (
         <li key={page} className={`${style.paginate} ${pageCurrent === page ? style.active : ' '}`}>
           <Link
             to={`?search=${nameSearch}&page=${page}`}
