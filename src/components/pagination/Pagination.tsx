@@ -1,40 +1,31 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { api } from 'src/apiRequests/GetPeople';
+import React, { useEffect, useState, /* useCallback, */ useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { createPages } from 'src/utils/CreatePages';
 import { getName } from 'src/utils/GetLocalStorage';
+import { People } from 'src/types';
 import style from 'src/components/pagination/Pagination.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
+import { useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 
 type PaginationProps = {
   onClick: (search: string, page: number) => void;
 };
 
 export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
+  const nameSearch = getName('searchName');
+  const { data } = useGetPersonQuery(nameSearch) as { data: People };
+  const count = Number(data?.count || 0);
   const [currentPage, setCurrentPage] = useState<number[]>([]);
   const { pageCurrent } = useContext(PeopleContext);
 
-  const nameSearch = getName('searchName');
-
-  const countPagesSearch = useCallback(async (searchName: string) => {
-    const result = await api.getPerson(searchName);
-    const pages = createPages(result.count);
-    setCurrentPage(pages);
-  }, []);
-
   useEffect(() => {
-    const showPages = async () => {
-      if (nameSearch === ' ') {
-        const response = await api.getPerson(nameSearch);
-        const pages = createPages(response.count);
-        setCurrentPage(pages);
-      } else {
-        countPagesSearch(nameSearch);
-      }
+    const showPages = () => {
+      const pages = createPages(count);
+      setCurrentPage(pages);
     };
 
     showPages();
-  }, [countPagesSearch, nameSearch]);
+  }, [count, nameSearch]);
 
   return (
     <div className={style.pagination}>

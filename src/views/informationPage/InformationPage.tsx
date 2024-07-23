@@ -1,21 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import style from 'src/views/informationPage/InformationPage.module.scss';
-import { Person, api } from 'src/apiRequests/GetPeople';
+import { Person, People } from 'src/types';
 import { useLocation } from 'react-router-dom';
 import { getName } from 'src/utils/GetName';
 import { Cart } from 'src/components/cart/Cart';
+import { useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 
 export const InformationPage: React.FC = () => {
   const [information, setInformation] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
 
-  const handlePerson = useCallback(async () => {
-    const name = getName(location.pathname);
-    const personResult = await api.getPerson(name);
-    setInformation(personResult.results);
+  const name = getName(location.pathname);
+
+  const { data } = useGetPersonQuery(name) as { data: People };
+
+  const handlePerson = useCallback(() => {
+    setInformation(data?.results ?? []);
     setIsLoading(false);
-  }, [location.pathname]);
+  }, [data]);
 
   useEffect(() => {
     handlePerson();

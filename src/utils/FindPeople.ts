@@ -1,8 +1,6 @@
-import { Person } from 'src/apiRequests/GetPeople';
+import { Person } from 'src/types';
 
-export const findPeople = (people: Person[], searchName: string, searchLower: string) => {
-  const peopleName = people.filter(
-    (person) => person.name.toLowerCase().includes(searchLower) || person.name === searchName,
-  );
+export const findPeople = (people: Person[], searchName: string) => {
+  const peopleName = people.filter((person) => person.name === searchName);
   return peopleName;
 };

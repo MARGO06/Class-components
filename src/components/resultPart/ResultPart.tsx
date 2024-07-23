@@ -1,31 +1,31 @@
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { Person, api } from 'src/apiRequests/GetPeople';
+import { People, Person } from 'src/types';
 import { getName } from 'src/utils/GetLocalStorage';
 import { findPeople } from 'src/utils/FindPeople';
-import { PeopleResult } from '../peoplePart/PeoplePart';
+import { PeopleResult } from 'src/components/peoplePart/PeoplePart';
+import { useGetPeopleOnPageQuery } from 'src/store/apiRequests/GetPeople';
 
 export const ResultPart: React.FC = () => {
+  const nameSearch = getName('searchName');
   const [peopleState, setPeopleState] = useState<Person[]>([]);
   const { people, pageCurrent, isActive } = useContext(PeopleContext);
-
-  const nameSearch = getName('searchName');
+  const { data } = useGetPeopleOnPageQuery({ inputValue: nameSearch, page: pageCurrent }) as {
+    data: People;
+  };
 
   const handlePerson = useCallback(
-    async (searchName: string) => {
-      await api.getPerson(searchName);
-      const searchLower = searchName.toLowerCase();
-      const filterPeople = findPeople(people, searchName, searchLower);
+    (searchName: string) => {
+      const filterPeople = findPeople(people, searchName);
       setPeopleState(filterPeople);
     },
     [people],
   );
 
   const handlePeopleOnPage = useCallback(async () => {
-    const resultPeople = await api.getPeopleOnPage(nameSearch, pageCurrent);
-    setPeopleState(resultPeople.results);
-  }, [nameSearch, pageCurrent]);
+    setPeopleState(data?.results ?? []);
+  }, [data]);
 
   useEffect(() => {
     if (nameSearch) {
@@ -33,7 +33,7 @@ export const ResultPart: React.FC = () => {
     } else {
       handlePeopleOnPage();
     }
-  }, [handlePeopleOnPage, handlePerson, nameSearch]);
+  }, [handlePeopleOnPage, handlePerson, nameSearch, data]);
 
   return (
     <section className={`${style.people} ${isActive ? style.active : ''}`}>

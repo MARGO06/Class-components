@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Person } from 'src/apiRequests/GetPeople';
+import { Person } from 'src/types';
 import closeIcon from 'src/assets/close_button.png';
 import { PeopleContext } from 'src/hooks/ContextHook';
 import { handleSearchParams } from 'src/utils/SearchParams';

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Person } from 'src/apiRequests/GetPeople';
+import { Person } from 'src/types';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
 import { useLocation, Link } from 'react-router-dom';

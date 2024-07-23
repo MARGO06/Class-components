@@ -1,13 +1,14 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { ResultPart } from 'src/components/resultPart/ResultPart';
 import { SearchPart } from 'src/components/searchPart/SearchPart';
-import { Person, api } from 'src/apiRequests/GetPeople';
+import { Person, People } from 'src/types';
 import { Pagination } from 'src/components/pagination/Pagination';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import styles from 'src/views/mainPage/MainPage.module.scss';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { handleSearchParams } from 'src/utils/SearchParams';
 import { PeopleContext } from 'src/hooks/ContextHook';
+import { useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 
 const MainPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,24 +17,26 @@ const MainPage: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
   const navigation = useNavigate();
   const location = useLocation();
+  const { search } = location;
+  const name = new URLSearchParams(search).get('search') || '';
 
-  const handlePerson = useCallback(async (searchName: string) => {
-    const resultPeople = await api.getPerson(searchName);
-    setIsLoading(false);
-    setPeople(resultPeople.results);
-  }, []);
+  const { data } = useGetPersonQuery(name) as { data: People };
+
+  useEffect(() => {
+    if (data) {
+      setPeople(data.results);
+      setIsLoading(false);
+    }
+  }, [data]);
 
   const handleSearch = useCallback(
     (searchValue: string) => {
       localStorage.setItem('searchName', searchValue);
       setIsLoading(true);
-      handlePerson(searchValue).catch(() => {
-        setIsLoading(false);
-      });
       setPageCurrent(1);
       navigation(`?search=${searchValue}&page=1`);
     },
-    [handlePerson, navigation],
+    [navigation],
   );
 
   const handleClickLink = useCallback(() => {
@@ -54,9 +57,7 @@ const MainPage: React.FC = () => {
   const handlePageClick = useCallback(
     async (searchValue: string, page: number) => {
       setIsLoading(true);
-      const resultPeople = await api.getPeopleOnPage(searchValue, page);
       setIsLoading(false);
-      setPeople(resultPeople.results);
       setPageCurrent(page);
       navigation(`?search=${searchValue}&page=${page}`);
     },
@@ -73,19 +74,16 @@ const MainPage: React.FC = () => {
 
     const showPeople = async () => {
       if (searchName) {
-        const response = await api.getPerson(searchName);
-        setPeople(response.results);
+        setIsLoading(true);
+        if (data) {
+          setPeople(data.results);
+        }
+        setPageCurrent(page);
+        setIsLoading(false);
       }
-      if (searchName === ' ') {
-        const response = await api.getPerson(searchName);
-        setPeople(response.results);
-      }
-
-      setIsLoading(false);
-      setPageCurrent(page);
     };
     showPeople();
-  }, [location.search]);
+  }, [location.search, data]);
 
   return (
     <PeopleContext.Provider value={contextValue}>
