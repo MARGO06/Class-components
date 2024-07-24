@@ -1,0 +1,26 @@
+.flyout_element {
+  display: flex;
+  background-color: #c7aec7;
+  width: 45%;
+  justify-content: space-around;
+  padding: 5px 0 5px 0;
+  margin: 0 auto;
+}
+
+.cart {
+  align-self: center;
+}
+
+.button_remove,
+.button_download {
+  font-size: 1.6rem;
+  padding: 5px;
+  font-weight: 700;
+  background-color: rgb(163, 100, 223);
+  &:hover {
+    cursor: pointer;
+  }
+  &:active {
+    background-color: rgb(196, 146, 243);
+  }
+}

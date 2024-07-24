@@ -10,6 +10,7 @@ import { handleSearchParams } from 'src/utils/SearchParams';
 import { PeopleContext } from 'src/hooks/ContextHook';
 import { useGetPeopleOnPageQuery } from 'src/store/apiRequests/GetPeople';
 import { Loader } from 'src/components/loader/LoaderMain';
+import { FlyoutElement } from 'src/components/flyoutElement/FlyoutElement';
 
 const MainPage: React.FC = () => {
   const [pageCurrent, setPageCurrent] = useState(1);
@@ -77,6 +78,7 @@ const MainPage: React.FC = () => {
       <>
         <section className={`${style.people} ${isActive ? style.active : ''}`}>
           <PeopleResult people={peopleData.results} />
+          <FlyoutElement />
         </section>
         <Pagination onClick={handlePageClick} />
       </>
