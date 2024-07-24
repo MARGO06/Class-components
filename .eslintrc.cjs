@@ -40,4 +40,10 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['src/**/*.slice.tsx'],
+      rules: { 'no-param-reassign': ['error', { props: false }] },
+    },
+  ],
 };
