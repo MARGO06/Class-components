@@ -18,8 +18,11 @@ const activeCartStateReducer = createSlice({
     cartDelete(state, action: PayloadAction<string>) {
       state.activeCardId = state.activeCardId.filter((cartId) => cartId !== action.payload);
     },
+    allCartDelete(state) {
+      state.activeCardId = [];
+    },
   },
 });
 
-export const { cartAdded, cartDelete } = activeCartStateReducer.actions;
+export const { cartAdded, cartDelete, allCartDelete } = activeCartStateReducer.actions;
 export default activeCartStateReducer.reducer;
