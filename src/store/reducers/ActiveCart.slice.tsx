@@ -1,25 +1,28 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit/react';
+import { Person } from 'src/types';
 
 export type ActiveCardState = {
-  activeCardId: string[];
+  activeCardDetails: Person[];
 };
 
 const initialState: ActiveCardState = {
-  activeCardId: [],
+  activeCardDetails: [],
 };
 
 const activeCartStateReducer = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    cartAdded(state, action: PayloadAction<string>) {
-      state.activeCardId.push(action.payload);
+    cartAdded(state, action: PayloadAction<Person>) {
+      state.activeCardDetails.push(action.payload);
     },
     cartDelete(state, action: PayloadAction<string>) {
-      state.activeCardId = state.activeCardId.filter((cartId) => cartId !== action.payload);
+      state.activeCardDetails = state.activeCardDetails.filter(
+        (card) => card.url !== action.payload,
+      );
     },
     allCartDelete(state) {
-      state.activeCardId = [];
+      state.activeCardDetails = [];
     },
   },
 });

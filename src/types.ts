@@ -1,4 +1,5 @@
 export type Person = {
+  id?: string;
   name: string;
   birth_year: string;
   created: string;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Person } from 'src/types';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
@@ -18,53 +18,90 @@ export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
   const { searchName, page } = handleSearchParams(location.search);
 
   const dispatch = useDispatch();
-  const activeCardId = useSelector((state: RootState) => state.states.activeCardId);
+  const activeCardDetails = useSelector((state: RootState) => state.states.activeCardDetails);
 
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log(activeCardId);
-  }, [activeCardId]);
-
-  const handleClickItem = (url: string) => {
-    if (activeCardId.includes(url)) {
-      dispatch(cartDelete(url));
-      // eslint-disable-next-line no-console
-      console.log(activeCardId);
+  const handleClickItem = (person: Person) => {
+    const cardExist = activeCardDetails.some((card) => card.url === person.url);
+    if (cardExist) {
+      dispatch(cartDelete(person.url));
     } else {
-      dispatch(cartAdded(url));
+      dispatch(cartAdded(person));
     }
   };
 
   return (
     <>
-      {people.map(({ url, name, birth_year, gender, eye_color, hair_color, mass, height }) => (
-        <div
-          className={`${style.person} ${activeCardId.includes(url) ? style.active : ''}`}
-          key={url}
-          onClick={() => handleClickItem(url)}
-          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              handleClickItem(url);
+      {people.map(
+        ({
+          url,
+          name,
+          birth_year,
+          gender,
+          eye_color,
+          hair_color,
+          mass,
+          height,
+          created,
+          edited,
+          homeworld,
+          skin_color,
+        }) => (
+          <div
+            className={`${style.person} ${activeCardDetails.some((card) => card.url === url) ? style.active : ''}`}
+            key={url}
+            onClick={() =>
+              handleClickItem({
+                url,
+                name,
+                birth_year,
+                gender,
+                eye_color,
+                hair_color,
+                mass,
+                height,
+                created,
+                edited,
+                homeworld,
+                skin_color,
+              })
             }
-          }}
-          role="button"
-          tabIndex={0}
-          aria-label="Main container"
-        >
-          <Link
-            to={`details/name=${name}/?search=${searchName}&page=${page}`}
-            className={`${style.name}${isActive ? style.active : ''}`}
-            onClick={handleClickLink}
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleClickItem({
+                  url,
+                  name,
+                  birth_year,
+                  gender,
+                  eye_color,
+                  hair_color,
+                  mass,
+                  height,
+                  created,
+                  edited,
+                  homeworld,
+                  skin_color,
+                });
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label="Main container"
           >
-            {name}
-          </Link>
-          <p className={style.description} data-testid={`description:${name}`}>
-            This person was born in the year {birth_year}.{' '}
-            {gender.charAt(0).toUpperCase() + gender.slice(1)} has {eye_color} eyes,
-            {hair_color} hair, weighs {mass} kg, and is {height} cm tall.
-          </p>
-        </div>
-      ))}
+            <Link
+              to={`details/name=${name}/?search=${searchName}&page=${page}`}
+              className={`${style.name}${isActive ? style.active : ''}`}
+              onClick={handleClickLink}
+            >
+              {name}
+            </Link>
+            <p className={style.description} data-testid={`description:${name}`}>
+              This person was born in the year {birth_year}.{' '}
+              {gender.charAt(0).toUpperCase() + gender.slice(1)} has {eye_color} eyes,
+              {hair_color} hair, weighs {mass} kg, and is {height} cm tall.
+            </p>
+          </div>
+        ),
+      )}
     </>
   );
 };

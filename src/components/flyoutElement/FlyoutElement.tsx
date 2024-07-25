@@ -3,11 +3,13 @@ import { RootState } from 'src/store';
 import style from 'src/components/flyoutElement/FlyoutElement.module.scss';
 import { Button } from 'src/components/button/Button';
 import { useSelector, useDispatch } from 'react-redux';
+import { CSVLink } from 'react-csv';
 import { allCartDelete } from 'src/store/reducers/ActiveCart.slice';
 
 export const FlyoutElement: React.FC = () => {
   const dispatch = useDispatch();
-  const count = useSelector((state: RootState) => state.states.activeCardId.length);
+  const activeCardDetails = useSelector((state: RootState) => state.states.activeCardDetails);
+  const count = activeCardDetails.length;
 
   if (count === 0) {
     return null;
@@ -21,7 +23,13 @@ export const FlyoutElement: React.FC = () => {
         onClick={() => dispatch(allCartDelete())}
         title="Unselect all"
       />
-      <Button className={style.button_download} title="Download" />
+      <CSVLink
+        data={activeCardDetails}
+        filename={`${count}_persons.csv`}
+        className={style.button_download}
+      >
+        Download
+      </CSVLink>
     </div>
   );
 };
