@@ -3,9 +3,9 @@ import { RootState } from 'src/store';
 import style from 'src/components/flyoutElement/FlyoutElement.module.scss';
 import { Button } from 'src/components/button/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import { CSVLink } from 'react-csv';
 import { allCartDelete } from 'src/store/reducers/ActiveCart.slice';
 import { useTheme } from 'src/hooks/ThemeHook';
+import { convertToCSV } from 'src/utils/ConvertToCSV';
 
 export const FlyoutElement: React.FC = () => {
   const { isDark } = useTheme();
@@ -25,13 +25,13 @@ export const FlyoutElement: React.FC = () => {
         onClick={() => dispatch(allCartDelete())}
         title="Unselect all"
       />
-      <CSVLink
-        data={activeCardDetails}
-        filename={`${count}_persons.csv`}
+      <a
+        href={convertToCSV(activeCardDetails)}
+        download={`${count}_persons.csv`}
         className={style.button_download}
       >
         Download
-      </CSVLink>
+      </a>
     </div>
   );
 };

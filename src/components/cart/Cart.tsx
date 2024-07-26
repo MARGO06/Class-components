@@ -7,20 +7,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import style from 'src/views/informationPage/InformationPage.module.scss';
 import { useTheme } from 'src/hooks/ThemeHook';
 
-export const Cart: React.FC<Person> = ({
-  name,
-  birth_year,
-  created,
-  edited,
-  eye_color,
-  gender,
-  hair_color,
-  height,
-  homeworld,
-  mass,
-  skin_color,
-  url,
-}) => {
+type CartProps = {
+  person: Person;
+};
+
+export const Cart: React.FC<CartProps> = ({ person }) => {
   const { setIsActive } = useContext(PeopleContext);
   const location = useLocation();
   const navigation = useNavigate();
@@ -34,18 +25,18 @@ export const Cart: React.FC<Person> = ({
 
   return (
     <>
-      <div className={`${style.dates} ${isDark ? '' : style.dark}`} key={url}>
-        <h2 className={style.name}>Name: {name}</h2>
-        <p>Birthday: {birth_year}</p>
-        <p>Created: {created}</p>
-        <p>Edited: {edited}</p>
-        <p>Eye color: {eye_color}</p>
-        <p>Gender: {gender}</p>
-        <p>Hair color: {hair_color}</p>
-        <p>Height: {height}</p>
-        <p>Home world: {homeworld}</p>
-        <p>Weight: {mass}</p>
-        <p>Skin color: {skin_color}</p>
+      <div className={`${style.dates} ${isDark ? '' : style.dark}`} key={person.url}>
+        <h2 className={style.name}>Name: {person.name}</h2>
+        <p>Birthday: {person.birth_year}</p>
+        <p>Created: {person.created}</p>
+        <p>Edited: {person.edited}</p>
+        <p>Eye color: {person.eye_color}</p>
+        <p>Gender: {person.gender}</p>
+        <p>Hair color: {person.hair_color}</p>
+        <p>Height: {person.height}</p>
+        <p>Home world: {person.homeworld}</p>
+        <p>Weight: {person.mass}</p>
+        <p>Skin color: {person.skin_color}</p>
       </div>
       <div
         className={style.button_close}

@@ -1,6 +1,6 @@
 import React from 'react';
 import style from 'src/views/informationPage/InformationPage.module.scss';
-import { People } from 'src/types';
+import { People, Person } from 'src/types';
 import { useLocation } from 'react-router-dom';
 import { getName } from 'src/utils/GetName';
 import { Cart } from 'src/components/cart/Cart';
@@ -28,22 +28,8 @@ export const InformationPage: React.FC = () => {
   } else if (isSuccess) {
     content = (
       <div className={style.information}>
-        {peopleData.results.map((person) => (
-          <Cart
-            key={person.url}
-            name={person.name}
-            birth_year={person.birth_year}
-            created={person.created}
-            edited={person.edited}
-            eye_color={person.eye_color}
-            gender={person.gender}
-            hair_color={person.hair_color}
-            height={person.height}
-            homeworld={person.homeworld}
-            mass={person.mass}
-            skin_color={person.skin_color}
-            url={person.url}
-          />
+        {peopleData.results.map((person: Person) => (
+          <Cart key={person.url} person={person} />
         ))}
       </div>
     );
