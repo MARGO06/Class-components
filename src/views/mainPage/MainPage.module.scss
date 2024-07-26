@@ -4,11 +4,17 @@
   &.active {
     display: flex;
   }
+  &.dark {
+    background-color: #190c6c;
+  }
 }
 
 .main {
   margin-bottom: 0;
   background-color: #88b6bb;
+  &.dark {
+    background-color: #350d0d;
+  }
 }
 
 .main.active {

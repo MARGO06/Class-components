@@ -11,10 +11,12 @@ import { PeopleContext } from 'src/hooks/ContextHook';
 import { useGetPeopleOnPageQuery } from 'src/store/apiRequests/GetPeople';
 import { Loader } from 'src/components/loader/LoaderMain';
 import { FlyoutElement } from 'src/components/flyoutElement/FlyoutElement';
+import { useTheme } from 'src/hooks/ThemeHook';
 
 const MainPage: React.FC = () => {
   const [pageCurrent, setPageCurrent] = useState(1);
   const [isActive, setIsActive] = useState(false);
+  const { isDark } = useTheme();
   const navigation = useNavigate();
   const location = useLocation();
   const { search } = location;
@@ -87,9 +89,11 @@ const MainPage: React.FC = () => {
 
   return (
     <PeopleContext.Provider value={contextValue}>
-      <div className={`${styles.wrapper}  ${isActive ? styles.active : ''}`}>
+      <div
+        className={`${styles.wrapper}  ${isActive ? styles.active : ''} ${isDark ? '' : styles.dark}`}
+      >
         <div
-          className={`${styles.main} ${isActive ? styles.active : ''}`}
+          className={`${styles.main} ${isActive ? styles.active : ''} ${isDark ? '' : styles.dark}`}
           onClick={handleMainClick}
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -103,7 +107,7 @@ const MainPage: React.FC = () => {
           <SearchPart onSearchClick={handleSearch} />
           {content}
         </div>
-        <div id="detail" className={style.detail}>
+        <div id="detail">
           <Outlet />
         </div>
       </div>

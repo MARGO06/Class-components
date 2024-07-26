@@ -3,11 +3,14 @@ import { RouterProvider } from 'react-router-dom';
 import 'src/App.css';
 import { Provider } from 'react-redux';
 import { store } from 'src/store/index';
+import { ThemeProvider } from './hooks/ThemeContext';
 
 const App = () => {
   return (
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </Provider>
   );
 };

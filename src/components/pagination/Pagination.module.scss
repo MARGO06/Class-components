@@ -4,6 +4,9 @@
   width: 30%;
   justify-content: space-between;
   margin-bottom: 10px;
+  &.dark > li > .page {
+    color: rgb(255, 127, 251);
+  }
 }
 .paginate {
   list-style-type: none;

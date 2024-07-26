@@ -5,6 +5,7 @@ import { PeopleContext } from 'src/hooks/ContextHook';
 import { handleSearchParams } from 'src/utils/SearchParams';
 import { useLocation, useNavigate } from 'react-router-dom';
 import style from 'src/views/informationPage/InformationPage.module.scss';
+import { useTheme } from 'src/hooks/ThemeHook';
 
 export const Cart: React.FC<Person> = ({
   name,
@@ -23,6 +24,7 @@ export const Cart: React.FC<Person> = ({
   const { setIsActive } = useContext(PeopleContext);
   const location = useLocation();
   const navigation = useNavigate();
+  const { isDark } = useTheme();
 
   const handleCloseClick = () => {
     const { searchName, page } = handleSearchParams(location.search);
@@ -32,7 +34,7 @@ export const Cart: React.FC<Person> = ({
 
   return (
     <>
-      <div className={style.dates} key={url}>
+      <div className={`${style.dates} ${isDark ? '' : style.dark}`} key={url}>
         <h2 className={style.name}>Name: {name}</h2>
         <p>Birthday: {birth_year}</p>
         <p>Created: {created}</p>

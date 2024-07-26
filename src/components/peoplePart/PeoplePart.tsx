@@ -7,12 +7,14 @@ import { handleSearchParams } from 'src/utils/SearchParams';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { cartAdded, cartDelete } from 'src/store/reducers/ActiveCart.slice';
+import { useTheme } from 'src/hooks/ThemeHook';
 
 type PeopleResultProps = {
   people: Person[];
 };
 
 export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
+  const { isDark } = useTheme();
   const { handleClickLink, isActive } = useContext(PeopleContext);
   const location = useLocation();
   const { searchName, page } = handleSearchParams(location.search);
@@ -47,7 +49,7 @@ export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
           skin_color,
         }) => (
           <div
-            className={`${style.person} ${activeCardDetails.some((card) => card.url === url) ? style.active : ''}`}
+            className={`${style.person} ${activeCardDetails.some((card) => card.url === url) ? style.active : ''} ${isDark ? '' : style.dark}`}
             key={url}
             onClick={() =>
               handleClickItem({
@@ -89,7 +91,7 @@ export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
           >
             <Link
               to={`details/name=${name}/?search=${searchName}&page=${page}`}
-              className={`${style.name}${isActive ? style.active : ''}`}
+              className={`${style.name} ${isActive ? style.active : ''} `}
               onClick={handleClickLink}
             >
               {name}

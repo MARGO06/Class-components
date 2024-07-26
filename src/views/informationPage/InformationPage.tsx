@@ -9,7 +9,6 @@ import { Loader } from 'src/components/loader/LoaderInfo';
 
 export const InformationPage: React.FC = () => {
   const location = useLocation();
-
   const name = getName(location.pathname);
 
   const {

@@ -5,8 +5,10 @@ import { Button } from 'src/components/button/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { CSVLink } from 'react-csv';
 import { allCartDelete } from 'src/store/reducers/ActiveCart.slice';
+import { useTheme } from 'src/hooks/ThemeHook';
 
 export const FlyoutElement: React.FC = () => {
+  const { isDark } = useTheme();
   const dispatch = useDispatch();
   const activeCardDetails = useSelector((state: RootState) => state.states.activeCardDetails);
   const count = activeCardDetails.length;
@@ -16,7 +18,7 @@ export const FlyoutElement: React.FC = () => {
   }
 
   return (
-    <div className={style.flyout_element}>
+    <div className={`${style.flyout_element} ${isDark ? '' : style.dark}`}>
       <p className={style.cart}>{count} items are selected</p>
       <Button
         className={style.button_remove}

@@ -5,6 +5,17 @@
   justify-content: space-around;
   padding: 5px 0 5px 0;
   margin: 0 auto;
+  &.dark {
+    background-color: #0c1e3f;
+  }
+  &.dark > p {
+    color: #f1f1f1;
+  }
+  &.dark > .button_remove,
+  &.dark > .button_download {
+    background-color: rgb(81, 4, 96);
+    color: #f1f1f1;
+  }
 }
 
 .cart {

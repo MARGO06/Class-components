@@ -43,6 +43,15 @@
     background-size: 24px;
     background-position: calc(97%) 10px;
   }
+  &.dark {
+    background-color: #0c1e3f;
+  }
+  &.dark > .name {
+    color: aqua;
+  }
+  &.dark > .description {
+    color: #f1f1f1;
+  }
 }
 
 .name {

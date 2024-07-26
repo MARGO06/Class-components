@@ -11,9 +11,21 @@
     margin-top: 10px;
     margin-left: 120px;
   }
+  &.dark > .button_theme {
+    background-color: #d83b3b;
+  }
+  &.dark > .input_main {
+    border: #e9adad;
+    background-color: rgb(12, 37, 59);
+    color: aliceblue;
+  }
+  &.dark > .button_search {
+    background-color: rgb(81, 4, 96);
+    color: aliceblue;
+  }
 }
 
-#input_main {
+.input_main {
   font-size: 1.6rem;
   height: 35px;
   padding: 5px;
