@@ -91,6 +91,7 @@ const MainPage: React.FC = () => {
     <PeopleContext.Provider value={contextValue}>
       <div
         className={`${styles.wrapper}  ${isActive ? styles.active : ''} ${isDark ? '' : styles.dark}`}
+        data-testid="wrapper"
       >
         <div
           className={`${styles.main} ${isActive ? styles.active : ''} ${isDark ? '' : styles.dark}`}

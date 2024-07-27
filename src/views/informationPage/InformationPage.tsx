@@ -35,5 +35,9 @@ export const InformationPage: React.FC = () => {
     );
   }
 
-  return <div className={style.wrapper}>{content}</div>;
+  return (
+    <div className={style.wrapper} data-testid="wrapper">
+      {content}
+    </div>
+  );
 };

@@ -1,24 +1,25 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
-import { InformationPage } from 'src/views/informationPage/InformationPage';
+import MainPage from 'src/views/mainPage/MainPage';
 import '@testing-library/jest-dom';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { apiRequest, useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
-import { mockDataPeople } from 'src/views/informationPage/MockData';
+import { apiRequest, useGetPeopleOnPageQuery } from 'src/store/apiRequests/GetPeople';
+import { ThemeProvider } from 'src/hooks/ThemeContext';
+import { mockDataPeople } from '../informationPage/MockData';
 
 vi.mock('src/store/apiRequests/GetPeople', async (importOriginal) => {
   return {
     ...(await importOriginal<typeof import('src/store/apiRequests/GetPeople')>()),
-    useGetPersonQuery: vi.fn(),
+    useGetPeopleOnPageQuery: vi.fn(),
   };
 });
 
-describe('InformationPage', () => {
+describe('MainPage', () => {
   it('loading indicator is displayed while fetching data', async () => {
-    (useGetPersonQuery as ReturnType<typeof vi.fn>).mockReturnValue({
+    (useGetPeopleOnPageQuery as ReturnType<typeof vi.fn>).mockReturnValue({
       data: mockDataPeople,
       isFetching: true,
       isSuccess: false,
@@ -34,9 +35,11 @@ describe('InformationPage', () => {
 
     render(
       <Provider store={store}>
-        <BrowserRouter>
-          <InformationPage />
-        </BrowserRouter>
+        <ThemeProvider>
+          <BrowserRouter>
+            <MainPage />
+          </BrowserRouter>
+        </ThemeProvider>
       </Provider>,
     );
 

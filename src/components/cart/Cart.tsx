@@ -25,7 +25,11 @@ export const Cart: React.FC<CartProps> = ({ person }) => {
 
   return (
     <>
-      <div className={`${style.dates} ${isDark ? '' : style.dark}`} key={person.url}>
+      <div
+        className={`${style.dates} ${isDark ? '' : style.dark}`}
+        key={person.url}
+        data-testid="person-card"
+      >
         <h2 className={style.name}>Name: {person.name}</h2>
         <p>Birthday: {person.birth_year}</p>
         <p>Created: {person.created}</p>

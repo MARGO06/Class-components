@@ -1,45 +1,55 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
-import { mockDataPerson } from 'src/views/informationPage/MockData';
 import { Cart } from 'src/components/cart/Cart';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { mockDataPerson } from 'src/views/informationPage/MockData';
+import { ThemeProvider } from 'src/hooks/ThemeContext';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import activeCartReducer from 'src/store/reducers/ActiveCart.slice';
+import { apiRequest, useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async (importOriginal) => {
+vi.mock('src/store/apiRequests/GetPeople', async (importOriginal) => {
   return {
-    ...(await importOriginal<typeof import('react-router-dom')>()),
-    useNavigate: () => mockNavigate,
+    ...(await importOriginal<typeof import('src/store/apiRequests/GetPeople')>()),
+    useGetPersonQuery: vi.fn(),
   };
 });
 
-describe('Cart', () => {
-  it('the detailed card component correctly displays the detailed card data', async () => {
-    const mockResponse = {
-      ok: true,
-      status: 200,
-      json: async () => mockDataPerson,
-    } as Response;
+vi.mock('react-router-dom', async (importOriginal) => {
+  return {
+    ...(await importOriginal<typeof import('react-router-dom')>()),
+    useNavigate: vi.fn(),
+  };
+});
 
-    global.fetch = vi.fn(() => Promise.resolve(mockResponse));
+describe('PeoplePart', () => {
+  it('that the card component renders the relevant card data', async () => {
+    (useGetPersonQuery as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: mockDataPerson,
+      isFetching: true,
+      isSuccess: false,
+    });
+    const store = configureStore({
+      reducer: {
+        states: activeCartReducer,
+        [apiRequest.reducerPath]: apiRequest.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiRequest.middleware),
+    });
+    setupListeners(store.dispatch);
 
     render(
-      <MemoryRouter>
-        <Cart
-          name={mockDataPerson.name}
-          birth_year={mockDataPerson.birth_year}
-          created={mockDataPerson.created}
-          edited={mockDataPerson.edited}
-          eye_color={mockDataPerson.eye_color}
-          gender={mockDataPerson.gender}
-          hair_color={mockDataPerson.hair_color}
-          height={mockDataPerson.height}
-          homeworld={mockDataPerson.homeworld}
-          mass={mockDataPerson.mass}
-          skin_color={mockDataPerson.skin_color}
-          url={mockDataPerson.url}
-        />
-      </MemoryRouter>,
+      <Provider store={store}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Cart person={mockDataPerson} />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>,
     );
+
     await waitFor(() => {
       expect(screen.getByText('Name: Frank')).toBeInTheDocument();
       expect(screen.getByText('Birthday: 785')).toBeInTheDocument();
@@ -56,31 +66,31 @@ describe('Cart', () => {
   });
 
   it('clicking the close button hides the component', async () => {
-    const mockResponse = {
-      ok: true,
-      status: 200,
-      json: async () => mockDataPerson,
-    } as Response;
+    (useGetPersonQuery as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: mockDataPerson,
+      isFetching: false,
+      isSuccess: true,
+    });
+    const store = configureStore({
+      reducer: {
+        states: activeCartReducer,
+        [apiRequest.reducerPath]: apiRequest.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiRequest.middleware),
+    });
+    setupListeners(store.dispatch);
 
-    global.fetch = vi.fn(() => Promise.resolve(mockResponse));
+    const mockNavigate = vi.fn();
+    (useNavigate as ReturnType<typeof vi.fn>).mockReturnValue(mockNavigate);
 
     render(
-      <MemoryRouter>
-        <Cart
-          name={mockDataPerson.name}
-          birth_year={mockDataPerson.birth_year}
-          created={mockDataPerson.created}
-          edited={mockDataPerson.edited}
-          eye_color={mockDataPerson.eye_color}
-          gender={mockDataPerson.gender}
-          hair_color={mockDataPerson.hair_color}
-          height={mockDataPerson.height}
-          homeworld={mockDataPerson.homeworld}
-          mass={mockDataPerson.mass}
-          skin_color={mockDataPerson.skin_color}
-          url={mockDataPerson.url}
-        />
-      </MemoryRouter>,
+      <Provider store={store}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Cart person={mockDataPerson} />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>,
     );
 
     await waitFor(() => {
