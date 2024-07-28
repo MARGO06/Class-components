@@ -4,7 +4,7 @@ import { InformationPage } from 'src/views/informationPage/InformationPage';
 
 export const router = createBrowserRouter([
   {
-    path: 'RS-School_React/',
+    path: '/RS-School_React/',
     element: <MainPage />,
     children: [
       {

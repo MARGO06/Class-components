@@ -18,7 +18,10 @@ export const FlyoutElement: React.FC = () => {
   }
 
   return (
-    <div className={`${style.flyout_element} ${isDark ? '' : style.dark}`}>
+    <div
+      className={`${style.flyout_element} ${isDark ? '' : style.dark}`}
+      data-testid="flyout element"
+    >
       <p className={style.cart}>{count} items are selected</p>
       <Button
         className={style.button_remove}

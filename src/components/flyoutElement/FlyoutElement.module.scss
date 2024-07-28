@@ -15,6 +15,9 @@
   &.dark > .button_download {
     background-color: rgb(81, 4, 96);
     color: #f1f1f1;
+    &:hover {
+      background-color: rgb(100, 40, 92);
+    }
   }
 }
 

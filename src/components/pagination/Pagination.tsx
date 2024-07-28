@@ -1,4 +1,4 @@
-import React, { useEffect, useState, /* useCallback, */ useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { createPages } from 'src/utils/CreatePages';
 import { getName } from 'src/utils/GetLocalStorage';

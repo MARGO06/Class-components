@@ -78,7 +78,7 @@ const MainPage: React.FC = () => {
   } else if (isSuccess) {
     content = (
       <>
-        <section className={`${style.people} ${isActive ? style.active : ''}`}>
+        <section className={`${style.people} ${isActive ? style.active : ''}`} data-testid="people">
           <PeopleResult people={peopleData.results} />
           <FlyoutElement />
         </section>

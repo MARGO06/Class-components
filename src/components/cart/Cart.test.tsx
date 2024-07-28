@@ -1,7 +1,7 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Cart } from 'src/components/cart/Cart';
-import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { MemoryRouter, useNavigate, Route, Routes } from 'react-router-dom';
 import { mockDataPerson } from 'src/views/informationPage/MockData';
 import { ThemeProvider } from 'src/hooks/ThemeContext';
 import { configureStore } from '@reduxjs/toolkit';
@@ -43,8 +43,13 @@ describe('PeoplePart', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <MemoryRouter>
-            <Cart person={mockDataPerson} />
+          <MemoryRouter initialEntries={['/RS-School_React/details/Frank']}>
+            <Routes>
+              <Route
+                path="/RS-School_React/details/Frank"
+                element={<Cart person={mockDataPerson} />}
+              />
+            </Routes>
           </MemoryRouter>
         </ThemeProvider>
       </Provider>,

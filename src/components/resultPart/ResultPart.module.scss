@@ -45,9 +45,15 @@
   }
   &.dark {
     background-color: #0c1e3f;
+    &:hover {
+      background-color: #2b4678;
+    }
   }
   &.dark > .name {
     color: aqua;
+    &:hover {
+      color: rgb(206, 6, 237);
+    }
   }
   &.dark > .description {
     color: #f1f1f1;

@@ -14,7 +14,6 @@ type SearchPartProps = {
 
 export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
   const [inputValue, setInputValue] = useSaveName();
-  const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { isDark, changeTheme } = useTheme();
   const { isActive } = useContext(PeopleContext);
@@ -33,8 +32,6 @@ export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
     }
   };
 
-  const handleError = () => setHasError(true);
-
   useEffect(() => {
     const searchName = getName('searchName');
     if (searchName) {
@@ -42,8 +39,6 @@ export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
       onSearchClick(searchName);
     }
   }, [setInputValue, onSearchClick]);
-
-  if (hasError) throw new Error('Mistake');
 
   return (
     <section
@@ -57,7 +52,6 @@ export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
         onChange={handleNameChange}
       />
       <Button title="Search" className={style.button_search} onClick={handleNameSave} />
-      <Button title="Error" className={style.button_error} onClick={handleError} />
       {errorMessage && <div className={style.error_input}>{errorMessage}</div>}
     </section>
   );
