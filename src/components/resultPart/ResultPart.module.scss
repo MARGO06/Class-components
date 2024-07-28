@@ -35,15 +35,37 @@
   border-radius: 50px;
   &:hover {
     background-color: rgb(84, 217, 227);
+    cursor: pointer;
   }
   &.active {
-    width: 100%;
-    border-radius: 0;
+    background-image: url('../../assets/check.png');
+    background-repeat: no-repeat;
+    background-size: 24px;
+    background-position: calc(97%) 10px;
+  }
+  &.dark {
+    background-color: #0c1e3f;
+    &:hover {
+      background-color: #2b4678;
+    }
+  }
+  &.dark > .name {
+    color: aqua;
+    &:hover {
+      color: rgb(206, 6, 237);
+    }
+  }
+  &.dark > .description {
+    color: #f1f1f1;
   }
 }
 
 .name {
   color: #d83b3b;
+  font-size: 2rem;
+  &:hover {
+    color: rgb(226, 43, 165);
+  }
 }
 
 .description {

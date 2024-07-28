@@ -1,42 +1,55 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { PeopleResult } from 'src/components/peoplePart/PeoplePart';
 import { MemoryRouter } from 'react-router-dom';
 import { mockDataPeople } from 'src/views/informationPage/MockData';
+import { ThemeProvider } from 'src/hooks/ThemeContext';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import activeCartReducer from 'src/store/reducers/ActiveCart.slice';
+import { apiRequest, useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async (importOriginal) => {
+vi.mock('src/store/apiRequests/GetPeople', async (importOriginal) => {
   return {
-    ...(await importOriginal<typeof import('react-router-dom')>()),
-    useNavigate: () => mockNavigate,
+    ...(await importOriginal<typeof import('src/store/apiRequests/GetPeople')>()),
+    useGetPersonQuery: vi.fn(),
   };
 });
 
 describe('PeoplePart', () => {
   it('that the card component renders the relevant card data', async () => {
-    const mockResponse = {
-      ok: true,
-      status: 200,
-      json: async () => mockDataPeople,
-    } as Response;
-
-    global.fetch = vi.fn(() => Promise.resolve(mockResponse));
+    (useGetPersonQuery as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: mockDataPeople,
+      isFetching: true,
+      isSuccess: false,
+    });
+    const store = configureStore({
+      reducer: {
+        states: activeCartReducer,
+        [apiRequest.reducerPath]: apiRequest.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiRequest.middleware),
+    });
+    setupListeners(store.dispatch);
 
     render(
-      <MemoryRouter>
-        <PeopleResult peopleState={{ people: mockDataPeople }} />
-      </MemoryRouter>,
+      <Provider store={store}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <PeopleResult people={mockDataPeople.results} />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>,
     );
 
     await waitFor(() => {
-      const linkElement = screen.getAllByRole('link');
+      const linkElement = screen.getByRole('link', { name: /Frank/i });
+      const descriptionElement = screen.getByTestId('description:Frank');
 
-      const nameElement = within(linkElement[0]).getByTestId('name:Frank');
-      const descriptionElement = within(linkElement[0]).getByTestId('description:Frank');
-
-      expect(nameElement).toHaveTextContent('Frank');
+      expect(linkElement).toHaveTextContent('Frank');
       expect(descriptionElement).toHaveTextContent(
-        'This person was born in the year 785. Male has blue eyes,blond hair, weighs 123 kg, and is148 cm tall.',
+        'This person was born in the year 785. Male has blue eyes,blond hair, weighs 123 kg, and is 148 cm tall.',
       );
     });
   });
