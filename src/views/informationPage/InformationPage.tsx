@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import style from 'src/views/informationPage/InformationPage.module.scss';
 import { People, Person } from 'src/types';
 import { useLocation } from 'react-router-dom';
@@ -41,3 +41,4 @@ export const InformationPage: React.FC = () => {
     </div>
   );
 };
+*/

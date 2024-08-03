@@ -5,7 +5,6 @@ import { PeopleContext } from 'src/hooks/ContextHook';
 import { getName } from 'src/utils/GetLocalStorage';
 import style from 'src/components/searchPart/SearchPart.module.scss';
 import { useSaveName } from 'src/hooks/SaveName';
-import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'src/hooks/ThemeHook';
 
 type SearchPartProps = {
@@ -17,7 +16,7 @@ export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const { isDark, changeTheme } = useTheme();
   const { isActive } = useContext(PeopleContext);
-  const navigation = useNavigate();
+  // const navigation = useNavigate();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -28,7 +27,7 @@ export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
       setErrorMessage('Please remove the space at the end of the line');
     } else {
       onSearchClick(inputValue);
-      navigation(`?search=${inputValue}&page=1`);
+      //  navigation(`?search=${inputValue}&page=1`);
     }
   };
 

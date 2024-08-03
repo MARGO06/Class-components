@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   env: { browser: true, es2020: true },
   extends: [
+    'next',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
@@ -14,7 +15,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    project: ['./tsconfig.app.json', './tsconfig.node.json'],
+    project: ['./tsconfig.app.json'],
     ecmaFeatures: {
       jsx: true,
     },
@@ -30,15 +31,11 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
     'import/prefer-default-export': 'off',
+    'react/function-component-definition': 'off',
+    'react-refresh/only-export-components': 'off',
     'react/prop-types': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
-    'react/function-component-definition': [
-      2,
-      {
-        namedComponents: 'arrow-function',
-        unnamedComponents: 'arrow-function',
-      },
-    ],
+    'react/function-component-definition': 'off',
   },
   overrides: [
     {

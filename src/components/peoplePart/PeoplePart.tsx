@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import { Person } from 'src/types';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import { useLocation, Link } from 'react-router-dom';
-import { handleSearchParams } from 'src/utils/SearchParams';
+import Link from 'next/link';
+// import { handleSearchParams } from 'src/utils/SearchParams';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { cartAdded, cartDelete } from 'src/store/reducers/ActiveCart.slice';
@@ -16,8 +16,8 @@ type PeopleResultProps = {
 export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
   const { isDark } = useTheme();
   const { handleClickLink, isActive } = useContext(PeopleContext);
-  const location = useLocation();
-  const { searchName, page } = handleSearchParams(location.search);
+  // const location = useLocation();
+  // const { searchName, page } = handleSearchParams(location.search);
 
   const dispatch = useDispatch();
   const activeCardDetails = useSelector((state: RootState) => state.states.activeCardDetails);
@@ -90,7 +90,7 @@ export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
             aria-label="Main container"
           >
             <Link
-              to={`details/name=${name}/?search=${searchName}&page=${page}`}
+              href={`details/name=${name}/?search=${/* searchName  */ ''}&page=${/* page */ ''}`}
               className={`${style.name} ${isActive ? style.active : ''} `}
               onClick={handleClickLink}
             >

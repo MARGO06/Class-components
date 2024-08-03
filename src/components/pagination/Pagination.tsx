@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { createPages } from 'src/utils/CreatePages';
 import { getName } from 'src/utils/GetLocalStorage';
 import { People } from 'src/types';
@@ -9,7 +9,7 @@ import { useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 import { useTheme } from 'src/hooks/ThemeHook';
 
 type PaginationProps = {
-  onClick: (search: string, page: number) => void;
+  onClick: (/* search: string, */ page: number) => void;
 };
 
 export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
@@ -34,9 +34,9 @@ export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
       {pagesAll.map((page) => (
         <li key={page} className={`${style.paginate} ${pageCurrent === page ? style.active : ' '}`}>
           <Link
-            to={`?search=${nameSearch}&page=${page}`}
+            href={`?search=${nameSearch}&page=${page}`}
             className={style.page}
-            onClick={() => onClick(nameSearch, page)}
+            onClick={() => onClick(/* nameSearch, */ page)}
           >
             {page}
           </Link>

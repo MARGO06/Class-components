@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+/* import React, { useContext } from 'react';
 import { Person } from 'src/types';
 import closeIcon from 'src/assets/close_button.png';
 import { PeopleContext } from 'src/hooks/ContextHook';
@@ -59,3 +59,4 @@ export const Cart: React.FC<CartProps> = ({ person }) => {
     </>
   );
 };
+*/

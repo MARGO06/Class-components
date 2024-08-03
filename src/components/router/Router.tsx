@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+/* import { createBrowserRouter } from 'react-router-dom';
 import MainPage from 'src/views/mainPage/MainPage';
 import { InformationPage } from 'src/views/informationPage/InformationPage';
 
@@ -14,3 +14,4 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+*/
