@@ -49,7 +49,7 @@ export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
         value={inputValue}
         onChange={handleNameChange}
       />
-      <Button title="Searchs" className={style.button_search} onClick={handleNameSave} />
+      <Button title="Search" className={style.button_search} onClick={handleNameSave} />
       {errorMessage && <div className={style.error_input}>{errorMessage}</div>}
     </section>
   );
