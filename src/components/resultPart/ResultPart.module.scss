@@ -61,14 +61,17 @@
 }
 
 .name {
+  display: block;
   color: #d83b3b;
   font-size: 2rem;
+  text-align: center;
   &:hover {
     color: rgb(226, 43, 165);
   }
 }
 
 .description {
+  text-align: center;
   font-size: 1.6rem;
   margin-top: 10px;
   line-height: 2.5rem;

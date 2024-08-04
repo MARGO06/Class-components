@@ -1,19 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Link from 'next/link';
 import { createPages } from 'src/utils/CreatePages';
-import { getName } from 'src/utils/GetLocalStorage';
 import { People } from 'src/types';
 import style from 'src/components/pagination/Pagination.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
 import { useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 import { useTheme } from 'src/hooks/ThemeHook';
+import { useRouter } from 'next/router';
 
 type PaginationProps = {
-  onClick: (/* search: string, */ page: number) => void;
+  onClick: (page: number) => void;
 };
 
 export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
-  const nameSearch = getName('searchName');
+  const router = useRouter();
+  const { query } = router;
+  const nameSearch = query.search as string;
   const { isDark } = useTheme();
   const { data } = useGetPersonQuery(nameSearch) as { data: People };
   const count = Number(data?.count || 0);
@@ -36,7 +38,7 @@ export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
           <Link
             href={`?search=${nameSearch}&page=${page}`}
             className={style.page}
-            onClick={() => onClick(/* nameSearch, */ page)}
+            onClick={() => onClick(page)}
           >
             {page}
           </Link>

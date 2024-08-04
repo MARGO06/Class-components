@@ -1,10 +1,9 @@
 import { useState, useContext, useEffect } from 'react';
 import { Button } from 'src/components/button/Button';
+import { useRouter } from 'next/router';
 import { Input } from 'src/components/input/Input';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import { getName } from 'src/utils/GetLocalStorage';
 import style from 'src/components/searchPart/SearchPart.module.scss';
-import { useSaveName } from 'src/hooks/SaveName';
 import { useTheme } from 'src/hooks/ThemeHook';
 
 type SearchPartProps = {
@@ -12,11 +11,11 @@ type SearchPartProps = {
 };
 
 export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
-  const [inputValue, setInputValue] = useSaveName();
+  const [inputValue, setInputValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState('');
   const { isDark, changeTheme } = useTheme();
   const { isActive } = useContext(PeopleContext);
-  // const navigation = useNavigate();
+  const router = useRouter();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -27,17 +26,17 @@ export const SearchPart: React.FC<SearchPartProps> = ({ onSearchClick }) => {
       setErrorMessage('Please remove the space at the end of the line');
     } else {
       onSearchClick(inputValue);
-      //  navigation(`?search=${inputValue}&page=1`);
+      router.push(`/?search=${encodeURIComponent(inputValue)}&page=1`);
     }
   };
 
   useEffect(() => {
-    const searchName = getName('searchName');
+    const { query } = router;
+    const searchName = query.search as string;
     if (searchName) {
       setInputValue(searchName);
-      onSearchClick(searchName);
     }
-  }, [setInputValue, onSearchClick]);
+  }, [router]);
 
   return (
     <section

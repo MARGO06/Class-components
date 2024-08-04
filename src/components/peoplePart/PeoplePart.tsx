@@ -3,11 +3,11 @@ import { Person } from 'src/types';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
 import Link from 'next/link';
-// import { handleSearchParams } from 'src/utils/SearchParams';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { cartAdded, cartDelete } from 'src/store/reducers/ActiveCart.slice';
 import { useTheme } from 'src/hooks/ThemeHook';
+import { useRouter } from 'next/router';
 
 type PeopleResultProps = {
   people: Person[];
@@ -16,8 +16,8 @@ type PeopleResultProps = {
 export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
   const { isDark } = useTheme();
   const { handleClickLink, isActive } = useContext(PeopleContext);
-  // const location = useLocation();
-  // const { searchName, page } = handleSearchParams(location.search);
+  const router = useRouter();
+  const { search, page } = router.query;
 
   const dispatch = useDispatch();
   const activeCardDetails = useSelector((state: RootState) => state.states.activeCardDetails);
@@ -90,7 +90,7 @@ export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
             aria-label="Main container"
           >
             <Link
-              href={`details/name=${name}/?search=${/* searchName  */ ''}&page=${/* page */ ''}`}
+              href={`details/name=${name}/?search=${search}&page=${page}`}
               className={`${style.name} ${isActive ? style.active : ''} `}
               onClick={handleClickLink}
             >

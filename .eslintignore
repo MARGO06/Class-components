@@ -1,11 +1,13 @@
 /**/node_modules/*
 node_modules/
 coverage/
+next.comfig.mjs
 
 dist/
 build/
 out//**/node_modules/*
 node_modules/
+next.config.mjs
 
 dist/
 build/

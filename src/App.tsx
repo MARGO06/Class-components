@@ -1,8 +1,8 @@
-import 'src/App.css';
+/* import 'src/App.css';
 import { Provider } from 'react-redux';
 import { store } from 'src/store/index';
 import { ThemeProvider } from './hooks/ThemeContext';
-import MainPage from './views/mainPage/MainPage';
+import MainPage from '../pages/mainPage/MainPage';
 
 const App = () => {
   return (
@@ -12,6 +12,6 @@ const App = () => {
       </ThemeProvider>
     </Provider>
   );
-};
+}; 
 
-export default App;
+export default App; */
