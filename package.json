@@ -60,6 +60,9 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": "next lint"
+    "*.{ts,tsx}": [
+      "echo 'Linting staged files...'",
+      "next lint --file"
+    ]
   }
 }
