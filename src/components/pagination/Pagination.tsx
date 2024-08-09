@@ -1,30 +1,27 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Link from 'next/link';
 import { createPages } from 'src/utils/CreatePages';
-import { People } from 'src/types';
 import style from 'src/components/pagination/Pagination.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import { useGetPersonQuery } from 'src/store/apiRequests/GetPeople';
 import { useTheme } from 'src/hooks/ThemeHook';
 import { useRouter } from 'next/router';
 
 type PaginationProps = {
   onClick: (page: number) => void;
+  count: string;
 };
 
-export const Pagination: React.FC<PaginationProps> = ({ onClick }) => {
+export const Pagination: React.FC<PaginationProps> = ({ onClick, count }) => {
   const router = useRouter();
   const { query } = router;
   const nameSearch = query.search as string;
   const { isDark } = useTheme();
-  const { data } = useGetPersonQuery(nameSearch) as { data: People };
-  const count = Number(data?.count || 0);
   const [pagesAll, setPagesAll] = useState<number[]>([]);
   const { pageCurrent } = useContext(PeopleContext);
 
   useEffect(() => {
     const showPages = () => {
-      const pages = createPages(count);
+      const pages = createPages(Number(count));
       setPagesAll(pages);
     };
 

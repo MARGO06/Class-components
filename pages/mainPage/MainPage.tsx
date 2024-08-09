@@ -6,13 +6,17 @@ import style from 'src/components/resultPart/ResultPart.module.scss';
 import styles from 'pages/mainPage/MainPage.module.scss';
 import { PeopleResult } from 'src/components/peoplePart/PeoplePart';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import { useGetPeopleOnPageQuery } from 'src/store/apiRequests/GetPeople';
 import { Loader } from 'src/components/loader/LoaderMain';
 import { FlyoutElement } from 'src/components/flyoutElement/FlyoutElement';
 import { useTheme } from 'src/hooks/ThemeHook';
 import { useRouter } from 'next/router';
 
-const MainPage: React.FC = () => {
+type MainPageProps = {
+  people: People;
+};
+
+const MainPage: React.FC<MainPageProps> = ({ people }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [pageCurrent, setPageCurrent] = useState(1);
   const [isActive, setIsActive] = useState(false);
   const { isDark } = useTheme();
@@ -30,26 +34,14 @@ const MainPage: React.FC = () => {
     if (query.page) {
       setPageCurrent(Number(query.page));
     }
+    setIsLoading(false);
   }, [query.page]);
-
-  const {
-    data: peopleData,
-    isFetching,
-    isSuccess,
-  } = useGetPeopleOnPageQuery({
-    inputValue: searchName || '',
-    page: pageCurrent,
-  }) as {
-    data: People;
-    isFetching: boolean;
-    isSuccess: boolean;
-  };
 
   const handleSearch = useCallback(
     (searchValue: string) => {
-      localStorage.setItem('searchName', searchValue);
       setPageCurrent(1);
       router.push(`/?search=${encodeURIComponent(searchValue)}&page=1`);
+      setIsLoading(false);
     },
     [router],
   );
@@ -64,6 +56,7 @@ const MainPage: React.FC = () => {
       if (e.target === e.currentTarget) {
         setIsActive(false);
         router.push(`/?search=${search}&page=${page}`);
+        setIsLoading(false);
       }
     },
     [router],
@@ -71,36 +64,18 @@ const MainPage: React.FC = () => {
 
   const handlePageClick = useCallback(
     (page: number) => {
-      setPageCurrent(page);
-      const { search } = router.query;
-      if (search !== undefined) {
-        router.push(`?search=${search}&page=${page}`);
-      } else {
-        router.push(`?search=&page=${page}`);
+      if (searchName !== undefined) {
+        router.push(`?search=${searchName}&page=${page}`);
+        setPageCurrent(page);
       }
+      setIsLoading(false);
     },
-    [router],
+    [router, searchName],
   );
 
   const contextValue = useMemo(() => {
-    return { peopleData, pageCurrent, handleClickLink, setIsActive, isActive };
-  }, [peopleData, pageCurrent, handleClickLink, setIsActive, isActive]);
-
-  let content;
-
-  if (isFetching) {
-    content = <Loader />;
-  } else if (isSuccess) {
-    content = (
-      <>
-        <section className={`${style.people} ${isActive ? style.active : ''}`} data-testid="people">
-          <PeopleResult people={peopleData.results} />
-          <FlyoutElement />
-        </section>
-        <Pagination onClick={handlePageClick} />
-      </>
-    );
-  }
+    return { /* peopleData, */ pageCurrent, handleClickLink, setIsActive, isActive };
+  }, [pageCurrent, handleClickLink, setIsActive, isActive]);
 
   return (
     <PeopleContext.Provider value={contextValue}>
@@ -121,7 +96,20 @@ const MainPage: React.FC = () => {
           aria-label="Main container"
         >
           <SearchPart onSearchClick={handleSearch} />
-          {content}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <section
+                className={`${style.people} ${isActive ? style.active : ''}`}
+                data-testid="people"
+              >
+                <PeopleResult people={people.results} />
+                <FlyoutElement />
+              </section>
+              <Pagination onClick={handlePageClick} count={people.count} />
+            </>
+          )}
         </div>
       </div>
     </PeopleContext.Provider>
