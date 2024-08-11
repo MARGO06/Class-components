@@ -29,7 +29,7 @@ const MainPage: React.FC<MainPageProps> = ({ people }) => {
 
   useEffect(() => {
     if (typeof searchName === 'undefined') {
-      router.replace(`/?search=&page=${pageCurrent}`);
+      router.push(`/?search=&page=${pageCurrent}`);
     }
     setIsLoading(false);
   }, [searchName, pageCurrent, router]);

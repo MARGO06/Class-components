@@ -53,6 +53,7 @@ export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
             }}
             role="button"
             tabIndex={0}
+            data-testid="name"
           >
             {person.name}
           </div>

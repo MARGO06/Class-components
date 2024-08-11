@@ -12,7 +12,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:react/jsx-runtime',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'setupTests.ts', 'next.config.mjs'],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'setupTests.ts', 'next.config.mjs', 'vitest.config.ts'],
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
@@ -42,7 +42,9 @@ module.exports = {
   overrides: [
     {
       files: ['src/**/*.slice.tsx'],
-      rules: { 'no-param-reassign': ['error', { props: false }] },
+      rules: {
+        'no-param-reassign': ['error', { props: false }],
+      },
     },
   ],
 };

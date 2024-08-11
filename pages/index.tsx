@@ -1,6 +1,6 @@
-import MainPage from 'pages/mainPage/MainPage';
 import { People } from 'src/types';
 import { GetServerSideProps } from 'next';
+import MainPage from 'pages/mainPage/MainPage';
 
 const ALL_PEOPLE_URL = 'https://swapi.dev/api/people/';
 

@@ -31,7 +31,9 @@ export const Cart: React.FC<CartProps> = ({ person }) => {
         key={person.url}
         data-testid="person-card"
       >
-        <h2 className={style.name}>Name: {person.name}</h2>
+        <h2 className={style.name} data-testid="name-card">
+          Name: {person.name}
+        </h2>
         <p>Birthday: {person.birth_year}</p>
         <p>Created: {person.created}</p>
         <p>Edited: {person.edited}</p>
