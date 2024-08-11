@@ -2,6 +2,8 @@ module.exports = {
   root: true,
   env: { browser: true, es2020: true },
   extends: [
+    'next',
+    'next/core-web-vitals',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
@@ -10,11 +12,11 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:react/jsx-runtime',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'setupTests.ts'],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'setupTests.ts', 'next.config.mjs', 'vitest.config.ts'],
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    project: ['./tsconfig.app.json', './tsconfig.node.json'],
+    project: ['./tsconfig.json'],
     ecmaFeatures: {
       jsx: true,
     },
@@ -27,23 +29,22 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'error',
     'react-compiler/react-compiler': 'error',
     'react/require-default-props': 'off',
+    'react/jsx-props-no-spreading': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
     'import/prefer-default-export': 'off',
+    'react/function-component-definition': 'off',
+    'react-refresh/only-export-components': 'off',
     'react/prop-types': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
-    'react/function-component-definition': [
-      2,
-      {
-        namedComponents: 'arrow-function',
-        unnamedComponents: 'arrow-function',
-      },
-    ],
+    'react/function-component-definition': 'off',
   },
   overrides: [
     {
       files: ['src/**/*.slice.tsx'],
-      rules: { 'no-param-reassign': ['error', { props: false }] },
+      rules: {
+        'no-param-reassign': ['error', { props: false }],
+      },
     },
   ],
 };

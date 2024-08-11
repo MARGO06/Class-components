@@ -2,25 +2,26 @@ import React, { useContext } from 'react';
 import { Person } from 'src/types';
 import closeIcon from 'src/assets/close_button.png';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import { handleSearchParams } from 'src/utils/SearchParams';
-import { useLocation, useNavigate } from 'react-router-dom';
-import style from 'src/views/informationPage/InformationPage.module.scss';
+import style from 'src/details/InformationPage.module.scss';
 import { useTheme } from 'src/hooks/ThemeHook';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 type CartProps = {
   person: Person;
 };
 
 export const Cart: React.FC<CartProps> = ({ person }) => {
-  const { setIsActive } = useContext(PeopleContext);
-  const location = useLocation();
-  const navigation = useNavigate();
+  const { setIsActive, setShowInformationPage } = useContext(PeopleContext);
   const { isDark } = useTheme();
+  const router = useRouter();
+  const { query } = router;
+  const searchName = query.search as string;
 
   const handleCloseClick = () => {
-    const { searchName, page } = handleSearchParams(location.search);
     setIsActive(false);
-    navigation(`/RS-School_React/?search=${searchName}&page=${page}`);
+    setShowInformationPage(false);
+    router.push(`/?search=${searchName}&page=${query.page}`);
   };
 
   return (
@@ -30,7 +31,9 @@ export const Cart: React.FC<CartProps> = ({ person }) => {
         key={person.url}
         data-testid="person-card"
       >
-        <h2 className={style.name}>Name: {person.name}</h2>
+        <h2 className={style.name} data-testid="name-card">
+          Name: {person.name}
+        </h2>
         <p>Birthday: {person.birth_year}</p>
         <p>Created: {person.created}</p>
         <p>Edited: {person.edited}</p>
@@ -54,7 +57,7 @@ export const Cart: React.FC<CartProps> = ({ person }) => {
         role="button"
         tabIndex={0}
       >
-        <img src={closeIcon} className={style.button_close} alt="close_image" />
+        <Image src={closeIcon} className={style.button_close} alt="close_image" />
       </div>
     </>
   );

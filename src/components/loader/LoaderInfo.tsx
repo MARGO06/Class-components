@@ -1,5 +1,5 @@
 import React from 'react';
-import style from 'src/views/informationPage/InformationPage.module.scss';
+import style from 'src/details/InformationPage.module.scss';
 
 export const Loader: React.FC = () => {
   return (

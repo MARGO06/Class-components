@@ -3,6 +3,7 @@
   margin: 0 auto;
   &.active {
     display: flex;
+    flex-direction: row;
   }
   &.dark {
     background-color: #190c6c;
@@ -12,11 +13,8 @@
 .main {
   margin-bottom: 0;
   background-color: #88b6bb;
+
   &.dark {
     background-color: #350d0d;
   }
-}
-
-.main.active {
-  width: 50%;
 }
