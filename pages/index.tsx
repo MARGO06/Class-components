@@ -1,34 +1,37 @@
 import MainPage from 'pages/mainPage/MainPage';
 import { People } from 'src/types';
+import { GetServerSideProps } from 'next';
 
 const ALL_PEOPLE_URL = 'https://swapi.dev/api/people/';
 
-export async function getServerSideProps(context: {
-  query: { inputValue?: string; page?: string };
-}) {
-  const { inputValue = '', page = '1' } = context.query;
-  try {
-    const response = await fetch(`${ALL_PEOPLE_URL}?search=${inputValue}&page=${page}`);
-    const data: People = await response.json();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const query = context.query.search;
+  const page = context.query.page || '1';
+  const searchValue = Array.isArray(query) ? query.join(' ') : query || '';
+  let peopleResults = null;
 
-    return {
-      props: {
-        people: data,
-      },
-    };
+  try {
+    const response = await fetch(
+      `${ALL_PEOPLE_URL}?search=${encodeURIComponent(searchValue)}&page=${page}`,
+    );
+    const data: People = await response.json();
+    peopleResults = data;
   } catch (error) {
     console.error('Error fetching data:', error);
-    return {
-      props: {
-        people: [],
-      },
-    };
   }
-}
+
+  return {
+    props: {
+      peopleResults,
+      searchValue,
+    },
+  };
+};
 
 type HomePageTypes = {
-  people: People;
+  peopleResults: People | null;
 };
-export default function HomePage({ people }: HomePageTypes) {
-  return <MainPage people={people} />;
+
+export default function HomePage({ peopleResults }: HomePageTypes) {
+  return <MainPage people={peopleResults} />;
 }

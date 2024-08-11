@@ -2,12 +2,10 @@ import React, { useContext } from 'react';
 import { Person } from 'src/types';
 import style from 'src/components/resultPart/ResultPart.module.scss';
 import { PeopleContext } from 'src/hooks/ContextHook';
-import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { cartAdded, cartDelete } from 'src/store/reducers/ActiveCart.slice';
 import { useTheme } from 'src/hooks/ThemeHook';
-import { useRouter } from 'next/router';
 
 type PeopleResultProps = {
   people: Person[];
@@ -16,8 +14,6 @@ type PeopleResultProps = {
 export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
   const { isDark } = useTheme();
   const { handleClickLink, isActive } = useContext(PeopleContext);
-  const router = useRouter();
-  const { search, page } = router.query;
 
   const dispatch = useDispatch();
   const activeCardDetails = useSelector((state: RootState) => state.states.activeCardDetails);
@@ -33,77 +29,41 @@ export const PeopleResult: React.FC<PeopleResultProps> = ({ people }) => {
 
   return (
     <>
-      {people.map(
-        ({
-          url,
-          name,
-          birth_year,
-          gender,
-          eye_color,
-          hair_color,
-          mass,
-          height,
-          created,
-          edited,
-          homeworld,
-          skin_color,
-        }) => (
-          <div
-            className={`${style.person} ${activeCardDetails.some((card) => card.url === url) ? style.active : ''} ${isDark ? '' : style.dark}`}
-            key={url}
-            onClick={() =>
-              handleClickItem({
-                url,
-                name,
-                birth_year,
-                gender,
-                eye_color,
-                hair_color,
-                mass,
-                height,
-                created,
-                edited,
-                homeworld,
-                skin_color,
-              })
+      {people.map((person) => (
+        <div
+          className={`${style.person} ${activeCardDetails.some((card) => card.url === person.url) ? style.active : ''} ${isDark ? '' : style.dark}`}
+          key={person.url}
+          onClick={() => handleClickItem(person)}
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              handleClickItem(person);
             }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Main container"
+        >
+          <div
+            className={`${style.name} ${isActive ? style.active : ''} `}
+            onClick={() => handleClickLink(person)}
             onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
               if (e.key === 'Enter' || e.key === ' ') {
-                handleClickItem({
-                  url,
-                  name,
-                  birth_year,
-                  gender,
-                  eye_color,
-                  hair_color,
-                  mass,
-                  height,
-                  created,
-                  edited,
-                  homeworld,
-                  skin_color,
-                });
+                handleClickLink(person);
               }
             }}
             role="button"
             tabIndex={0}
-            aria-label="Main container"
           >
-            <Link
-              href={`details/name=${name}/?search=${search}&page=${page}`}
-              className={`${style.name} ${isActive ? style.active : ''} `}
-              onClick={handleClickLink}
-            >
-              {name}
-            </Link>
-            <p className={style.description} data-testid={`description:${name}`}>
-              This person was born in the year {birth_year}.{' '}
-              {gender.charAt(0).toUpperCase() + gender.slice(1)} has {eye_color} eyes,
-              {hair_color} hair, weighs {mass} kg, and is {height} cm tall.
-            </p>
+            {person.name}
           </div>
-        ),
-      )}
+          <p className={style.description} data-testid={`description:${person.name}`}>
+            This person was born in the year {person.birth_year}.{' '}
+            {person.gender.charAt(0).toUpperCase() + person.gender.slice(1)} has {person.eye_color}{' '}
+            eyes,
+            {person.hair_color} hair, weighs {person.mass} kg, and is {person.height} cm tall.
+          </p>
+        </div>
+      ))}
     </>
   );
 };
