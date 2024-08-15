@@ -1,16 +1,18 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from 'src/views/mainPage/MainPage';
-import { InformationPage } from 'src/views/informationPage/InformationPage';
+import { Header } from 'src/components/header/Header';
+import { UncontrolledForm } from 'src/views/uncontrolledForm/UncontrolledPage';
+import { ReactHookForm } from 'src/views/reactHookForm/ReactHookForm';
 
-export const router = createBrowserRouter([
-  {
-    path: '/RS-School_React/',
-    element: <MainPage />,
-    children: [
-      {
-        path: 'details/:name',
-        element: <InformationPage />,
-      },
-    ],
-  },
-]);
+export const Router: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/RS-School_React" element={<MainPage />} />
+        <Route path="/uncontrolled_page" element={<UncontrolledForm />} />
+        <Route path="/react_hook_form" element={<ReactHookForm />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
