@@ -10,8 +10,8 @@ export const Router: React.FC = () => {
       <Header />
       <Routes>
         <Route path="/RS-School_React" element={<MainPage />} />
-        <Route path="/uncontrolled_page" element={<UncontrolledForm />} />
-        <Route path="/react_hook_form" element={<ReactHookForm />} />
+        <Route path="/RS-School_React/uncontrolled_page" element={<UncontrolledForm />} />
+        <Route path="/RS-School_React/react_hook_form" element={<ReactHookForm />} />
       </Routes>
     </BrowserRouter>
   );
