@@ -6,9 +6,9 @@ import style from 'src/views/mainPage/MainPage.module.scss';
 const MainPage: React.FC = () => {
   const activeCardDetails = useSelector((state: RootState) => state.states.activeCardDetails);
   return (
-    <>
+    <div className={style.wrapper}>
       {activeCardDetails.map((person) => (
-        <div className="cart" key={person.email}>
+        <div className={style.card} key={person.email}>
           <p>Name:{person.name}</p>
           <p>Age:{person.age}</p>
           <p>Email:{person.email}</p>
@@ -20,7 +20,7 @@ const MainPage: React.FC = () => {
           <p>Accept:{person.accept}</p>
         </div>
       ))}
-    </>
+    </div>
   );
 };
 

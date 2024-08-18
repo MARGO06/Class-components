@@ -94,9 +94,10 @@ export const UncontrolledForm: React.FC = () => {
   }
 
   return (
-    <div className={style.wrapper} data-testid="wrapper">
+    <div className={style.wrapper}>
       <form onSubmit={handleSubmit}>
         <FormPart
+          labelName={style.label}
           htmlFor="name"
           title="Name"
           className={style.input}
@@ -105,8 +106,11 @@ export const UncontrolledForm: React.FC = () => {
           ref={nameRef}
           placeholder="name"
         />
-        {errors.name && <p className={style.error}>{errors.name}</p>}
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {errors.name || ''}
+        </p>
         <FormPart
+          labelName={style.label}
           htmlFor="age"
           title="Age"
           className={style.input}
@@ -115,8 +119,11 @@ export const UncontrolledForm: React.FC = () => {
           ref={ageRef}
           placeholder="age"
         />
-        {errors.age && <p className={style.error}>{errors.age}</p>}
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {errors.age || ''}
+        </p>
         <FormPart
+          labelName={style.label}
           htmlFor="email"
           type="email"
           title="Email"
@@ -126,8 +133,11 @@ export const UncontrolledForm: React.FC = () => {
           ref={emailRef}
           placeholder="email"
         />
-        {errors.email && <p className={style.error}>{errors.email}</p>}
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {errors.email || ''}
+        </p>
         <FormPart
+          labelName={style.label}
           htmlFor="password"
           type="password"
           title="Password"
@@ -137,8 +147,11 @@ export const UncontrolledForm: React.FC = () => {
           ref={passwordRef}
           placeholder="password"
         />
-        {errors.password && <p className={style.error}>{errors.password}</p>}
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {errors.password || ''}
+        </p>
         <FormPart
+          labelName={style.label}
           htmlFor="confirm_password"
           type="password"
           title="Confirm password"
@@ -148,15 +161,24 @@ export const UncontrolledForm: React.FC = () => {
           ref={confirmPasswordRef}
           placeholder="confirm password"
         />
-        {errors.confirmPassword && <p className={style.error}>{errors.confirmPassword}</p>}
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {errors.confirmPassword || ''}
+        </p>
         <div className={style.gender}>
-          <label htmlFor="male">Male</label>
-          <input type="radio" id="male" name="gender" value="male" ref={maleRef} />
-          <label htmlFor="female">Female</label>
-          <input type="radio" id="female" name="gender" value="female" ref={femaleRef} />
-          {errors.gender && <p className={style.error}>{errors.gender}</p>}
+          <p className={style.genderLabel}>Gender</p>
+          <div className={style.options}>
+            <label htmlFor="male">Male</label>
+            <input type="radio" id="male" name="gender" value="male" ref={maleRef} />
+            <label htmlFor="female">Female</label>
+            <input type="radio" id="female" name="gender" value="female" ref={femaleRef} />
+          </div>
+          <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+            {errors.gender || ''}
+          </p>
         </div>
-        <label htmlFor="country">Country</label>
+        <label htmlFor="country" className={style.label}>
+          Country
+        </label>
         <input
           className={style.input}
           id="country"
@@ -185,26 +207,44 @@ export const UncontrolledForm: React.FC = () => {
             ))}
           </ul>
         )}
-        {errors.country && <p className={style.error}>{errors.country}</p>}
-        <label htmlFor="upload">Upload Picture</label>
-        <input
-          type="file"
-          id="upload"
-          name="upload"
-          ref={imgRef}
-          accept=".png, .jpeg, .jpg"
-          style={{ display: 'none' }}
-          onChange={(e) => handleFileSelect(e)}
-        />
-        <button type="button" onClick={() => document.getElementById('upload')?.click()}>
-          Choose File
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {errors.country || ''}
+        </p>
+        <label htmlFor="upload" className={style.upload}>
+          Upload Picture
+          <div>
+            <input
+              type="file"
+              id="upload"
+              name="upload"
+              ref={imgRef}
+              accept=".png, .jpeg, .jpg"
+              style={{ display: 'none' }}
+              onChange={(e) => handleFileSelect(e)}
+            />
+            <button
+              type="button"
+              className={style.button_select}
+              onClick={() => document.getElementById('upload')?.click()}
+            >
+              Select File
+            </button>
+            <span>{fileName || 'No file selected'}</span>
+          </div>
+        </label>
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {fileError || ''}
+        </p>
+        <label htmlFor="accept" className={style.accept}>
+          Do you agree to accept personal date
+          <input type="checkbox" id="accept" name="rules" value="yes" ref={acceptRef} />
+        </label>
+        <p className={`${style.error} ${errors.name ? style.visible : style.hidden}`}>
+          {errors.accept || ''}
+        </p>
+        <button type="submit" className={style.submit}>
+          Submit
         </button>
-        <span>{fileName || 'No file selected'}</span>
-        {fileError && <p className={style.error}>{fileError}</p>}
-        <label htmlFor="accept">Do you agree to accept personal date</label>
-        <input type="checkbox" id="accept" name="rules" value="yes" ref={acceptRef} />
-        {errors.accept && <p className={style.error}>{errors.accept}</p>}
-        <button type="submit">Submit</button>
       </form>
     </div>
   );

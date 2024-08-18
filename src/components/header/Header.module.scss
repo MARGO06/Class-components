@@ -1,0 +1,21 @@
+header {
+  height: 5vh;
+}
+
+.navigation {
+  padding: 2vh;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+}
+
+.link {
+  font-size: 1.6rem;
+}
+
+.active {
+  text-decoration: underline;
+  color: rgb(142, 34, 169);
+}

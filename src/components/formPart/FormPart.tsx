@@ -4,13 +4,19 @@ type FormPartProps = LabelHTMLAttributes<HTMLLabelElement> &
   InputHTMLAttributes<HTMLInputElement> & {
     title: string;
     type?: string;
+    labelName?: string;
   };
 
 export const FormPart = forwardRef<HTMLInputElement, FormPartProps>(
-  ({ htmlFor, className, type, defaultValue = '', id, name, title, placeholder }, ref) => {
+  (
+    { htmlFor, className, type, defaultValue = '', id, name, title, placeholder, labelName },
+    ref,
+  ) => {
     return (
       <>
-        <label htmlFor={htmlFor}>{title}</label>
+        <label htmlFor={htmlFor} className={labelName}>
+          {title}
+        </label>
         <input
           className={className}
           defaultValue={defaultValue}

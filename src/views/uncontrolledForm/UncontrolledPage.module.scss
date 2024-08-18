@@ -2,5 +2,154 @@ form {
   display: flex;
   flex-direction: column;
   width: 50%;
-  margin: 0 auto;
+  padding: 7vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.submit,
+.label,
+.upload,
+.accept {
+  margin-top: 5px;
+}
+
+.label {
+  text-align: start;
+  margin-bottom: 10px;
+  font-size: 1.6rem;
+}
+
+.upload {
+  text-align: start;
+  font-size: 1.6rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.upload span {
+  margin-bottom: 8px;
+}
+
+.upload div {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 30px;
+}
+
+.accept {
+  display: flex;
+  flex-direction: row-reverse;
+  font-size: 1.6rem;
+  margin-bottom: 5px;
+  width: 61%;
+  gap: 10px;
+}
+
+.submit {
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error {
+  min-height: 20px;
+  margin-top: 4px;
+  color: red;
+  font-size: 12px;
+  transition: opacity 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+input {
+  height: 3.5vh;
+}
+
+.genderLabel {
+  margin-bottom: 5px;
+  display: block;
+  text-align: start;
+}
+
+.options {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.options > label {
+  font-size: 1.4rem;
+}
+
+input[id='country'] {
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.autocompleteList {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: -5px;
+  z-index: 1000;
+}
+
+.autocompleteItem {
+  list-style: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.autocompleteItem:hover,
+.autocompleteItem:focus {
+  background-color: #f0f0f0;
+}
+
+.buttonItem {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.buttonItem:focus,
+.buttonItem:hover {
+  background-color: #e0e0e0;
+}
+
+.buttonItem:active {
+  background-color: #d0d0d0;
+}
+
+.button_select,
+.submit {
+  background-color: rgb(100, 185, 185);
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+  height: 2.6vh;
 }
