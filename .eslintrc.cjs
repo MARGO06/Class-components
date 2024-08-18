@@ -29,6 +29,7 @@ module.exports = {
     'react/require-default-props': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
+    'react/jsx-props-no-spreading': 'off',
     'jsx-a11y/label-has-associated-control': [
       'error',
       {
