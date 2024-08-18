@@ -1,14 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import style from 'src/views/uncontrolledForm/UncontrolledPage.module.scss';
-import { addFirstLetterUpperCaseMethod } from 'src/utils/YupAddTestName';
-import { addNumber } from 'src/utils/YupAddTestAge';
-import { addPassword } from 'src/utils/YupAddTestPassword';
+import { validateFile } from 'src/utils/ValidateFile';
+import { FormPart } from 'src/components/formPart/FormPart';
+import { convertToBase64 } from 'src/utils/ConvertFile';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/store';
+import { schema } from 'src/utils/Schema';
 import * as yup from 'yup';
-
-addFirstLetterUpperCaseMethod();
-addNumber();
-addPassword();
+import { cartAdded } from 'src/store/reducers/ActiveCart.slice';
 
 export const UncontrolledForm: React.FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -16,48 +16,69 @@ export const UncontrolledForm: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
-  const genderRef = useRef<HTMLInputElement>(null);
+  const maleRef = useRef<HTMLInputElement>(null);
+  const femaleRef = useRef<HTMLInputElement>(null);
+  const acceptRef = useRef<HTMLInputElement>(null);
+  const imgRef = useRef<HTMLInputElement>(null);
+  const countryRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string>('');
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [filteredCountries, setFilteredCountries] = useState<string[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
-  const schema = yup.object().shape({
-    name: yup
-      .string()
-      .required('Value is required and must be a string')
-      .firstLetterUpperCase('First letter must be uppercase'),
-    age: yup
-      .number()
-      .required('You need to write down age')
-      .addMinNumber('Age will be 0 or more than 0'),
-    email: yup.string().required().email('Please enter a valid email address'),
-    password: yup.string().required().addRightPassword(),
-    confirmPassword: yup
-      .string()
-      .required('Please confirm your password')
-      .oneOf([yup.ref('password')], 'Passwords must match'),
-    gender: yup
-      .string()
-      .required('Please select your gender')
-      .oneOf(['male', 'female'], 'Invalid gender selected'),
-  });
+  const dispatch = useDispatch();
+  const countries = useSelector((state: RootState) => state.countries.activeCountries);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setFileName(file ? file.name : 'No file selected');
+  };
+
+  const handleCountryChange = () => {
+    const query = countryRef.current?.value || '';
+    const filtered = countries.filter((country: string) =>
+      country.toLowerCase().includes(query.toLowerCase()),
+    );
+    setFilteredCountries(filtered);
+  };
+
+  const handleCountrySelect = (country: string) => {
+    countryRef.current!.value = country;
+    setFilteredCountries([]);
+  };
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    let selectedGender = '';
+
+    if (maleRef.current?.checked) {
+      selectedGender = 'male';
+    } else if (femaleRef.current?.checked) {
+      selectedGender = 'female';
+    }
     const formData = {
       name: nameRef.current?.value || '',
       email: emailRef.current?.value || '',
       password: passwordRef.current?.value || '',
       confirmPassword: confirmPasswordRef.current?.value || '',
-      gender: genderRef.current?.value || '',
+      gender: selectedGender,
+      country: countryRef.current?.value || '',
+      accept: acceptRef.current?.checked ? 'yes' : 'no',
       age: ageRef.current?.value ? Number(ageRef.current?.value) : undefined,
+      img: '',
     };
 
     try {
       await schema.validate(formData, { abortEarly: false });
-      // eslint-disable-next-line no-console
-      console.log(
-        `${formData.name},${formData.age},${formData.email},${formData.password},${formData.confirmPassword},${formData.gender}`,
-      );
+      if (imgRef.current?.files?.[0]) {
+        const file = imgRef.current.files[0];
+        const isValid = validateFile(file, setFileError);
+        if (!isValid) return;
+        const base64 = await convertToBase64(file);
+        if (typeof base64 === 'string') formData.img = base64;
+      }
+      dispatch(cartAdded(formData));
       navigate('/RS-School_React');
     } catch (validationErrors) {
       if (validationErrors instanceof yup.ValidationError) {
@@ -71,63 +92,118 @@ export const UncontrolledForm: React.FC = () => {
       }
     }
   }
+
   return (
     <div className={style.wrapper} data-testid="wrapper">
       <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Name</label>
-        <input
+        <FormPart
+          htmlFor="name"
+          title="Name"
           className={style.input}
-          defaultValue=""
           id="name"
           name="name"
           ref={nameRef}
-          placeholder="Enter your name"
+          placeholder="name"
         />
         {errors.name && <p className={style.error}>{errors.name}</p>}
-        <label htmlFor="age">Age</label>
-        <input
+        <FormPart
+          htmlFor="age"
+          title="Age"
           className={style.input}
-          defaultValue=""
           id="age"
           name="age"
           ref={ageRef}
-          placeholder="Enter your age"
+          placeholder="age"
         />
         {errors.age && <p className={style.error}>{errors.age}</p>}
-        <label htmlFor="email">Email</label>
-        <input
+        <FormPart
+          htmlFor="email"
+          type="email"
+          title="Email"
           className={style.input}
-          defaultValue=""
           id="email"
           name="email"
           ref={emailRef}
-          placeholder="Enter your email"
+          placeholder="email"
         />
         {errors.email && <p className={style.error}>{errors.email}</p>}
-        <label htmlFor="password">Password</label>
-        <input
+        <FormPart
+          htmlFor="password"
+          type="password"
+          title="Password"
           className={style.input}
-          defaultValue=""
           id="password"
           name="password"
           ref={passwordRef}
-          placeholder="Enter your password"
+          placeholder="password"
         />
         {errors.password && <p className={style.error}>{errors.password}</p>}
-        <label htmlFor="confirm_password">Password</label>
-        <input
+        <FormPart
+          htmlFor="confirm_password"
+          type="password"
+          title="Confirm password"
           className={style.input}
-          defaultValue=""
           id="confirm_password"
           name="confirm_password"
           ref={confirmPasswordRef}
-          placeholder="Enter your password"
+          placeholder="confirm password"
         />
         {errors.confirmPassword && <p className={style.error}>{errors.confirmPassword}</p>}
-        <label htmlFor="male">Male</label>
-        <input type="radio" id="male" name="gender" value="male" ref={genderRef} />
-        <label htmlFor="female">Female</label>
-        <input type="radio" id="female" name="gender" value="female" ref={genderRef} />
+        <div className={style.gender}>
+          <label htmlFor="male">Male</label>
+          <input type="radio" id="male" name="gender" value="male" ref={maleRef} />
+          <label htmlFor="female">Female</label>
+          <input type="radio" id="female" name="gender" value="female" ref={femaleRef} />
+          {errors.gender && <p className={style.error}>{errors.gender}</p>}
+        </div>
+        <label htmlFor="country">Country</label>
+        <input
+          className={style.input}
+          id="country"
+          name="country"
+          ref={countryRef}
+          placeholder="Enter your country"
+          onChange={handleCountryChange}
+        />
+        {filteredCountries.length > 0 && (
+          <ul className={style.autocompleteList}>
+            {filteredCountries.map((country) => (
+              <li key={country} className={style.autocompleteItem}>
+                <button
+                  type="button"
+                  onClick={() => handleCountrySelect(country)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleCountrySelect(country);
+                    }
+                  }}
+                  className={style.buttonItem}
+                >
+                  {country}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {errors.country && <p className={style.error}>{errors.country}</p>}
+        <label htmlFor="upload">Upload Picture</label>
+        <input
+          type="file"
+          id="upload"
+          name="upload"
+          ref={imgRef}
+          accept=".png, .jpeg, .jpg"
+          style={{ display: 'none' }}
+          onChange={(e) => handleFileSelect(e)}
+        />
+        <button type="button" onClick={() => document.getElementById('upload')?.click()}>
+          Choose File
+        </button>
+        <span>{fileName || 'No file selected'}</span>
+        {fileError && <p className={style.error}>{fileError}</p>}
+        <label htmlFor="accept">Do you agree to accept personal date</label>
+        <input type="checkbox" id="accept" name="rules" value="yes" ref={acceptRef} />
+        {errors.accept && <p className={style.error}>{errors.accept}</p>}
         <button type="submit">Submit</button>
       </form>
     </div>

@@ -20,15 +20,6 @@ export const addPassword = () => {
       const hasDigit = value.split('').some((char) => char >= '0' && char <= '9');
       const specialCharacters = '@$!%*?&#';
       const hasSpecialChar = value.split('').some((char) => specialCharacters.includes(char));
-      // eslint-disable-next-line no-console
-      console.log({
-        hasLowercase,
-        hasUppercase,
-        hasDigit,
-        hasSpecialChar,
-        isCorrectLength: value.length === minLength,
-      });
-
       if (
         value.length !== minLength ||
         !hasLowercase ||

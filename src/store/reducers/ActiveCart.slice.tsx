@@ -10,22 +10,14 @@ const initialState: ActiveCardState = {
 };
 
 const activeCartStateReducer = createSlice({
-  name: 'cart',
+  name: 'card',
   initialState,
   reducers: {
     cartAdded(state, action: PayloadAction<Person>) {
       state.activeCardDetails.push(action.payload);
     },
-    cartDelete(state, action: PayloadAction<string>) {
-      state.activeCardDetails = state.activeCardDetails.filter(
-        (card) => card.url !== action.payload,
-      );
-    },
-    allCartDelete(state) {
-      state.activeCardDetails = [];
-    },
   },
 });
 
-export const { cartAdded, cartDelete, allCartDelete } = activeCartStateReducer.actions;
+export const { cartAdded } = activeCartStateReducer.actions;
 export default activeCartStateReducer.reducer;

@@ -1,14 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { apiRequest } from 'src/store/apiRequests/GetPeople';
 import activeCartReducer from 'src/store/reducers/ActiveCart.slice';
+import activeCountriesReducer from 'src/store/reducers/ActiveCountries.slice';
 
 export const store = configureStore({
   reducer: {
     states: activeCartReducer,
-    [apiRequest.reducerPath]: apiRequest.reducer,
+    countries: activeCountriesReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiRequest.middleware),
 });
 
 setupListeners(store.dispatch);
